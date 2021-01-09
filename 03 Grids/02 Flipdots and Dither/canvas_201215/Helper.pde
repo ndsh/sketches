@@ -1,11 +1,11 @@
 void keyPressed() {
   canvas.flip();
 }
-
+/*
 void movieEvent(Movie m) {
   m.read();
   change = true;
-}
+}*/
 
 String leadingZero(int i) {
   String s = ""+i;

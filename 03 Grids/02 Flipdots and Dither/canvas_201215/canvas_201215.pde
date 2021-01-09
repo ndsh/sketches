@@ -7,9 +7,10 @@
 import processing.video.*;
 Movie myMovie;
 Canvas canvas;
+Dither dither;
 PGraphics pg;
 PImage p;
-boolean export = false;
+boolean export = true;
 
 color white = color(255);
 color black = color(0);
@@ -28,25 +29,40 @@ int frameNr;
 
 void setup() {
   // dont use noSmooth() with Big Sur. it'll crash your system.
-  size(600, 600, P2D);
+  size(600, 600);
   frameRate(30); // Big Sur fix for P2D. SAD!
   surface.setLocation(0, 0);
   
-  p = loadImage("test.jpg");
-  canvas = new Canvas(64, 64, 1, 5);
-  canvas.feed(p);
+  dither = new Dither(100, 100);
+  dither.setMode(1);
   
-  myMovie = new Movie(this, "ok.mp4");
+  p = loadImage("test.jpg");
+  canvas = new Canvas(60, 60, 4, 5);
+  canvas.feed(p);
+  canvas.setMode(4);
+  canvas.setFilling(false);
+  strokeWeight(2);
+  
+  myMovie = new Movie(this, "merry.mp4");
   myMovie.loop();
+  rectMode(CENTER);
 }
 
 void draw() {
-  if(change) {
+  if(myMovie.available()) {
+    myMovie.read();
     background(0);
-    canvas.feed(myMovie);
-    canvas.update();
-    canvas.display();
+    
+    //if(change) {
+      dither.feed(myMovie);
+      canvas.feed(dither.dither());
+    
+      //canvas.feed(myMovie);
+      canvas.update();
     change = false;
+    //}
+    canvas.display();
+    
     
     if(export) {
       save("export/"+folderFormat+"/"+ frameNr +".tga");

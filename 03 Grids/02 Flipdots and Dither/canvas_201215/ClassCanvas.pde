@@ -96,6 +96,18 @@ class Canvas {
     }
   }
   
+  void setMode(int m) {
+    for(int i = 0; i<dots.size(); i++) {
+      dots.get(i).setMode(m);
+    }
+  }
+  
+  void setFilling(boolean b) {
+    for(int i = 0; i<dots.size(); i++) {
+      dots.get(i).setFilling(b);
+    }
+  }
+  
   color averageColor(PImage source, float x, float y, float w, float h) {
     PImage temp = source.get((int)x, (int)y, (int)w, (int)h);
     temp.loadPixels();

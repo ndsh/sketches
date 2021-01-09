@@ -6,6 +6,8 @@ class Dot {
   float rotation;
   float increment;
   long timestamp = 0;
+  int displayMode = 0; // 0 = ellipse / 1 = rect / 2 = line
+  boolean displayFill = true;
 
   public Dot(float flipdotSize) {
     size = flipdotSize;
@@ -43,14 +45,24 @@ class Dot {
 
   void display() {
     push();
-    noStroke();
+    if(displayFill) noStroke();
+    else noFill();
 
-    if (state) fill(white);
-    else fill(black);
+    if(displayFill) {
+      if (state) fill(white);
+      else fill(black);
+    } else {
+      if (state) stroke(white);
+      else stroke(black);
+    }
     translate(pos.x, pos.y);
 
     rotate(radians(-45));
-    ellipse(0, 0, size, rotation);
+    if(displayMode == 0) ellipse(0, 0, size, rotation);
+    else if(displayMode == 1) rect(0, 0, size, rotation);
+    else if(displayMode == 2) line(0, 0, size, rotation);
+    else if(displayMode == 3) triangle(0, 0, 0, size, 0, rotation);
+    else if(displayMode == 4) arc(0, 0, size, rotation, 0, PI);
     pop();
   }
   
@@ -66,6 +78,14 @@ class Dot {
     pg.ellipse(0, 0, size, rotation);
     pg.pop();
     
+  }
+  
+  void setMode(int m) {
+    displayMode = m;
+  }
+  
+  void setFilling(boolean b) {
+    displayFill = b;
   }
 
   void flip() {
