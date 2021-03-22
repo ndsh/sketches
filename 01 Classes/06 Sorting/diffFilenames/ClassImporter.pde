@@ -7,7 +7,7 @@ class Importer {
   StringList folders = new StringList();
   StringList files = new StringList();
   
-  String[] legalFiles = {"jpg", "JPG", "jpeg", "JPEG", "png", "PNG"};
+  String[] legalFiles = {"jpg", "JPG", "jpeg", "JPEG", "png", "PNG", "tif", "TIF", "tiff", "TIFF", "pdf", "PDF"};
   
   IntList maxima = new IntList();
 
@@ -35,16 +35,23 @@ class Importer {
   void loadFiles(String folder) {
     files = new StringList();
     println("\nListing info about all files in a directory and all subdirectories: ");
-    ArrayList<File> allFiles = listFilesRecursive(path+"/"+folder);
+    ArrayList<File> allFiles = null;
+    allFiles = listFilesRecursive(path+"/"+folder);
+    
+    
+    
+    println("path= " + path+"/"+folder);
     int c = 0;
     for (File f : allFiles) {
       if (!f.isDirectory()) {
         boolean okayFile = false;
         String[] split = split(f.getName(), ".");
-        for(int i = 0; i<legalFiles.length; i++) {
-          if(legalFiles[i].equals(split[1])) {
-            okayFile = true;
-            break;
+        if(split.length > 1) {
+          for(int i = 0; i<legalFiles.length; i++) {
+            if(legalFiles[i].equals(split[1])) {
+              okayFile = true;
+              break;
+            }
           }
         }
         /*
@@ -102,6 +109,10 @@ class Importer {
       return null;
     }
   }
+  
+
+  
+  // recursive
 
   // Function to get a list of all files in a directory and all subdirectories
   ArrayList<File> listFilesRecursive(String dir) {
