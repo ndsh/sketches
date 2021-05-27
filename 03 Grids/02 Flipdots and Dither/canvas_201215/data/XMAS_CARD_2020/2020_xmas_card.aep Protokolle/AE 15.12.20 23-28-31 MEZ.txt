@@ -1,0 +1,1 @@
+  15.12.20 23:28:31 MEZ: Komposition 'Komp 1' gestartet.  Sichern unter: /Users/julianhespenheide/Documents/Development/Git/sketches/03 Grids/02 Flipdots and Dither/canvas_201215/data/XMAS_CARD_2020/out.mov    15.12.20 23:28:46 MEZ: Komposition 'Komp 1' beendet.  Bish. Renderz.: 15 SekundenDas Protokoll wurde am 15.12.20 um 23:28:47 MEZ geschlossen.
