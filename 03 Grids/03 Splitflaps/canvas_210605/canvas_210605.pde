@@ -19,6 +19,7 @@
 // [ ] animation: cellular automata
 // [ ] control playback speed of ani class
 // [ ] invert image
+// [ ] play / pause
 
 import controlP5.*;
 import java.util.Collections;
@@ -28,14 +29,14 @@ Grid grid;
 Animation animation;
 ControlP5 cp5;
 
-int selectSet = 0;
+int selectSet = 5;
 String[] charSets = {
   " .:,;#'+*`=?!¬”#^˜·$%/()",
   " ░▒▓█▄▀│┤╣║╚╔╗╝┐╩└╦╠┴═┬├╬─┼┘┌¦┼└┴┬├┐",
   " ░▒▓█▄▀",
   " ☿♀♁♂♃♄♅♆♇",
   " ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghjiklmnopqrstuvwxyz",
-  "!#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~"
+  " !#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~"
 };
 
 
@@ -53,7 +54,7 @@ int[][] resolutions = {
   {1920, 1080},
   {1080, 1920}
 };
-int selectResolution = 2;
+int selectResolution = 0;
 int gridSize = 60; // 20x20
 
 float splitflapInterval = 2;

@@ -25,6 +25,10 @@ String leadingZero(int i) {
 }
 
 void initGrid() {
+  if(grid != null) {
+    grid = null;
+    System.gc();
+  }
   grid = new Grid(resolutions[selectResolution][0], resolutions[selectResolution][1], charSets[selectSet], fontNames[selectFont], gridSize, splitflapInterval, splitflapCooldown);
 }
 
@@ -66,8 +70,8 @@ void initCP5() {
   cp5.addSlider("gridSize")
   .setPosition(600,300)
   .setRange(0,200)
-  .setNumberOfTickMarks(20)
-  .setValue(20)
+  //.setNumberOfTickMarks(20)
+  .setValue(80)
   ;
   
   cp5.addSlider("splitflapInterval")
