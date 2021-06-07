@@ -6,7 +6,7 @@
 
 // todo
 // [ ] fix canvas positioning: it's slightly off?
-// [ ] tiles are not properly resizing with canvas
+// [x] tiles are not properly resizing with canvas: was a floating error. ofc.
 // [x] charSets and fonts in arrays?
 // [x] get a PGraphics objects from grid
 // [ ] slowtrailing
@@ -18,6 +18,7 @@
 // [ ] animation: gray scale animation
 // [ ] animation: cellular automata
 // [ ] control playback speed of ani class
+// [ ] invert image
 
 import controlP5.*;
 import java.util.Collections;
@@ -27,7 +28,7 @@ Grid grid;
 Animation animation;
 ControlP5 cp5;
 
-int selectSet = 1;
+int selectSet = 0;
 String[] charSets = {
   " .:,;#'+*`=?!¬”#^˜·$%/()",
   " ░▒▓█▄▀│┤╣║╚╔╗╝┐╩└╦╠┴═┬├╬─┼┘┌¦┼└┴┬├┐",
@@ -52,7 +53,7 @@ int[][] resolutions = {
   {1920, 1080},
   {1080, 1920}
 };
-int selectResolution = 0;
+int selectResolution = 2;
 int gridSize = 60; // 20x20
 
 float splitflapInterval = 2;
@@ -83,7 +84,7 @@ void setup() {
   initGrid();
   
   animation = new Animation(this, resolutions[selectResolution][0], resolutions[selectResolution][1]);
-  //grid.feed(loadImage("assets/test2.png"));
+  grid.feed(loadImage("assets/test2.png"));
 }
 
 void draw() {
@@ -92,6 +93,7 @@ void draw() {
   animation.update();
   
   grid.feed(animation.getDisplay());
+  //grid.feed(loadImage("assets/test2.png"));
   grid.update();
   //grid.display();
   

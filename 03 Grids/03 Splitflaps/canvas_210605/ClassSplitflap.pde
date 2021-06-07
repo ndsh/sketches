@@ -17,7 +17,7 @@ class Splitflap {
   
   PVector pos;
   
-  Splitflap(int x, int y, int n, String sorted, float _interval, float _cooldown) {
+  Splitflap(float x, float y, int n, String sorted, float _interval, float _cooldown) {
     vocabulary = sorted;
     nuance = n;
     pos = new PVector(x, y);
@@ -36,7 +36,7 @@ class Splitflap {
   }
   
   void display(PGraphics pg) {
-    int mapped = (int)map(value, 0, nuance, 0, vocabulary.length()-1);
+    int mapped = (int)map(value, 0, nuance, 0, vocabulary.length()-1);;
     pg.text(vocabulary.charAt(mapped), pos.x, pos.y);
   }
   

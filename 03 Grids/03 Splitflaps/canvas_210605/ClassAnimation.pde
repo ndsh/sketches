@@ -19,7 +19,7 @@ class Animation {
   final int SQUAREY = 2;
   final int RECTANGLE = 3;
   final int MOVIE = 4;
-  int state = CIRCLE;
+  int state = MOVIE;
   int maxStates = 5;
   float mapped0 = 0;
   float mapped1 = 0;
@@ -47,7 +47,7 @@ class Animation {
     pg.strokeWeight(5);
     pg.endDraw();
     
-    movie = new Movie(pa, "../assets/ok.mp4");
+    movie = new Movie(pa, "../assets/interns.mp4");
     movie.loop();
   }
   
@@ -153,4 +153,5 @@ class Animation {
   String getStateName() {
     return stateNames[state];
   }
+
 }

@@ -10,14 +10,14 @@ class Grid {
   PFont font;
   int maxDensity = spriteSize*spriteSize;
   int gridSize;
-  int[] tileSize = {0, 0};
+  float[] tileSize = {0, 0};
   int nuance;
   int amount;
   
   ArrayList<Density> densities = new ArrayList<Density>();
   PImage target = null;
   
-  public Grid(int w, int h, String charset, String fontName, int _gridSize, float interval, float cooldown) {    
+  public Grid(float w, float h, String charset, String fontName, int _gridSize, float interval, float cooldown) {    
     font = loadFont(fontName);
     gridSize = _gridSize;
     if(gridSize == 0) gridSize = 1;
@@ -25,6 +25,7 @@ class Grid {
     tileSize[1] = h/gridSize;
     nuance = charset.length(); // the different nuances or densities we have. basically the amount of chars
     amount = gridSize*gridSize;
+    //amount = tileSize[]|;
     flaps = new Splitflap[amount];
 
     
@@ -38,6 +39,8 @@ class Grid {
     pg.endDraw();
     textFont(font);
     textSize(tileSize[0]);
+    rectMode(CENTER);
+    textAlign(CENTER, CENTER);
     
     // build densities
     println("Calculating densities. This may take a second or two");
@@ -67,13 +70,18 @@ class Grid {
     println("Done!");
     
     // create the canvas of the grid
-    pg = createGraphics(w, h);
+    pg = createGraphics((int)w, (int)h);
     pg.beginDraw();
+    pg.rectMode(CENTER);
+    pg.textFont(font);
+    pg.textSize(tileSize[0]);
+    pg.textAlign(CENTER, CENTER);
     pg.endDraw();
     
-    brightnessGrid = createGraphics(w, h);
+    brightnessGrid = createGraphics((int)w, (int)h);
     brightnessGrid.beginDraw();
     brightnessGrid.textFont(font);
+    brightnessGrid.rectMode(CENTER);
     brightnessGrid.textAlign(CENTER, CENTER);
     brightnessGrid.endDraw();
   }
@@ -83,6 +91,7 @@ class Grid {
     float b = 0;
     brightnessGrid.beginDraw();
     brightnessGrid.clear();
+    
     brightnessGrid.noStroke();
     for(int y = 0; y<gridSize; y++) {
       for(int x = 0; x<gridSize; x++) {
