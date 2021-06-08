@@ -11,6 +11,8 @@
 // [x] get a PGraphics objects from grid
 // [ ] slowtrailing
 // [ ] cp5 sliders, get all parameters in one place
+// [ ] cp5: dropdowns: font, characterSet, resolution
+// [ ] cp5: rotate 90° resolution for not square formats
 // [ ] fix textFont sizes for the different grids
 // [x] resolution modes: square, 16:9, 9:16
 // [ ] video import (low prio)
@@ -52,7 +54,9 @@ String[] fontNames = {
 int[][] resolutions = {
   {600, 600},
   {1920, 1080},
-  {1080, 1920}
+  {1080, 1920},
+  {3840, 2160},
+  {7680, 4320},
 };
 int selectResolution = 0;
 int gridSize = 60; // 20x20
@@ -78,6 +82,7 @@ void setup() {
   frameRate(60);
   noSmooth();
   surface.setLocation(0, 0);
+  surface.setTitle("Splitflapesque");
   
   Ani.init(this);
   initCP5();
@@ -99,7 +104,7 @@ void draw() {
   //grid.display();
   
   if(selectResolution == 0) image(grid.getDisplay(), 10, 10, 580, 580);
-  else if(selectResolution == 1) image(grid.getDisplay(), 10, 10, 580, 326);
+  else if(selectResolution == 1 || selectResolution == 3) image(grid.getDisplay(), 10, 10, 580, 326);
   else if(selectResolution == 2) image(grid.getDisplay(), 10, 10, 326, 580);
   image(animation.getDisplay(), 600, 10, 80, 80);
   if(brightnessToggle) image(grid.getBrightnessGrid(), 700, 10, 80, 80);

@@ -58,7 +58,7 @@ class Animation {
     pg.strokeWeight(5);
     pg.endDraw();
     
-    movie = new Movie(pa, "../assets/spiral.mp4");
+    movie = new Movie(pa, "../assets/lines.mp4");
     movie.loop();
     
     // SINEWAVE
