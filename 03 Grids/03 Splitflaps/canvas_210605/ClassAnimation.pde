@@ -25,15 +25,16 @@ class Animation {
   final int ROTATING_BALL = 8;
   final int ARCS = 9;
   final int ARCS_PERLIN = 10;
-  int state = ARCS_PERLIN;
-  int maxStates = 11;
+  final int DIAGONAL_BALLS = 11;
+  int state = ROTATING_BALL;
+  int maxStates = 12;
   float mapped0 = 0;
   float mapped1 = 0;
   
   String[] stateNames = {
     "CIRCLE", "ELLIPSE", "SQUARE", "RECTANGLE", "MOVIE",
     "SINE", "THREE LINES", "CELLULAR AUTOMATA", "ROTATING BALL",
-    "ARCS", "ARCS PERLIN"
+    "ARCS", "ARCS PERLIN", "DIAGONAL BALLS"
   };
   
   color fillColor = 0;
@@ -55,11 +56,11 @@ class Animation {
   
   // PERLIN
   float xoff = 0.0;
-  float xincrement = 0.01;
+  float xincrement = 5;
   float yoff = 0.0;
-  float yincrement = 0.01;
+  float yincrement = 05;
   float zoff = 0.0;
-  float zincrement = 0.01;
+  float zincrement = 5;
   float n = 0;
   float m = 0;
   float o = 0;
@@ -228,13 +229,13 @@ class Animation {
       case ROTATING_BALL:
         amplitude = 300.0;
         // Increment theta (try different values for 'angular velocity' here
-        theta += 0.2;
+        theta += 0.05;
       
         // For every x value, calculate a y value with sine function
         temp = theta;
         
-          yvalues[0] = sin(temp)*amplitude;
-          temp+=dx;
+        yvalues[0] = sin(temp)*amplitude;
+        temp+=dx;
         
         pg.beginDraw();
         //pg.background(0);
@@ -247,9 +248,9 @@ class Animation {
         pg.noStroke();
         pg.fill(255);
         // A simple way to draw the wave with an ellipse at each location
-        pg.rotate(radians(theta));
+        pg.rotate(radians(theta*8));
         pg.translate(0*xspacing, 600+yvalues[0]);
-        pg.ellipse(0, -600, 16, 16);
+        pg.ellipse(0, -600, 64, 64);
         
          
         pg.endDraw();
@@ -284,6 +285,10 @@ class Animation {
         m = noise(yoff)*pg.width;
         o = noise(zoff)*pg.width;
         
+        xincrement = 0.01;
+        yincrement = 0.01;
+        zincrement = 0.01;
+        
         xoff += xincrement;
         yoff += yincrement;
         zoff += zincrement;
@@ -306,6 +311,44 @@ class Animation {
         pg.endDraw();
         
 
+      break;
+      
+      case DIAGONAL_BALLS:
+        xoff += xincrement;
+        if(xoff >= pg.width+(pg.width/4)) {
+          xoff = -(pg.width+(pg.width/4));
+          n = random(pg.height);
+          xincrement = random(5);
+        }
+        
+        yoff += yincrement;
+        if(yoff >= pg.width+(pg.width/4)) {
+          yoff = -(pg.width+(pg.width/4));
+          m = random(pg.height);
+          yincrement = random(5);
+        }
+        
+        zoff += zincrement;
+        if(yoff >= pg.width+(pg.width/4)) {
+          yoff = -(pg.width+(pg.width/4));
+          o = random(pg.height);
+          zincrement = random(5);
+        }
+        
+        
+        pg.beginDraw();
+        pg.background(0);
+        pg.translate(pg.width/2, pg.height/2);
+        pg.rotate(-45);
+        pg.ellipseMode(CENTER);
+        pg.noStroke();
+        pg.fill(255);
+        pg.ellipse(xoff, n, 32, 32);
+        pg.ellipse(yoff, m, 32, 32);
+        pg.ellipse(zoff, o, 32, 32);
+        //pg.strokeWeight(16);
+        pg.endDraw();
+       
       break;
       
       

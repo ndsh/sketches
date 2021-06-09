@@ -33,7 +33,7 @@ Grid grid;
 Animation animation;
 ControlP5 cp5;
 
-int selectSet = 10;
+int selectSet = 9;
 String[] charSets = {
   " .:,;#'+*`=?!¬”#^˜·$%/()",
   " ░▒▓█▄▀│┤╣║╚╔╗╝┐╩└╦╠┴═┬├╬─┼┘┌¦┼└┴┬├┐",
@@ -65,7 +65,7 @@ int[][] resolutions = {
   {3840, 2160},
   {7680, 4320},
 };
-int selectResolution = 2;
+int selectResolution = 0;
 int gridSize = 60; // 20x20
 
 float splitflapInterval = 2;
