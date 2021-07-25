@@ -12,6 +12,12 @@ void keyPressed() {
     } else if (key == 'b' || key == 'B' ) {
       brightnessToggle = !brightnessToggle;
       println("brightnessToggle= " + brightnessToggle);
+    } else if (key == 'f' || key == 'F' ) { 
+      if(animation != null) animation.flock.addBoid(new Boid(mouseX,mouseY));
+    } else if (key == 'a' || key == 'A' ) {
+      toggleFeed = !toggleFeed;
+    } else if (key == 'i' || key == 'I' ) {
+      toggleIncrement = !toggleIncrement;
     }
   }
   
@@ -30,10 +36,13 @@ void initGrid() {
     System.gc();
   }
   grid = new Grid(resolutions[selectResolution][0], resolutions[selectResolution][1], charSets[selectSet], fontNames[selectFont], gridSize, splitflapInterval, splitflapCooldown);
+  if(grid != null && animation != null) animation.updateSize(grid.getTilesize()[0]);
 }
 
 Textlabel stateLabel;
 Textlabel fpsLabel;
+Textlabel fontLabel;
+Textlabel charsLabel;
 //ScrollableList imageList;
 
 color black = color(0, 0, 0);
@@ -67,10 +76,48 @@ void initCP5() {
   .setPosition(600, 120)
   ;
   
+  cp5.addButton("PREVFONT")
+  .setValue(0)
+  .setPosition(680,140)
+  .setSize(40,16)
+  .setCaptionLabel("<")
+  ;
+  
+  cp5.addButton("NEXTFONT")
+  .setValue(0)
+  .setPosition(720,140)
+  .setSize(40,16)
+  .setCaptionLabel(">")
+  ;
+  
+  fontLabel = cp5.addTextlabel("label3")
+  .setText("FONT=")
+  .setPosition(600, 160)
+  ;
+  
+  cp5.addButton("PREVCHARS")
+  .setValue(0)
+  .setPosition(680,160)
+  .setSize(40,16)
+  .setCaptionLabel("<")
+  ;
+  
+  cp5.addButton("NEXTCHARS")
+  .setValue(0)
+  .setPosition(720,160)
+  .setSize(40,16)
+  .setCaptionLabel(">")
+  ;
+  
+  charsLabel = cp5.addTextlabel("label4")
+  .setText("CHARS=")
+  .setPosition(600, 180)
+  ;
+  
   cp5.addSlider("gridSize")
   .setPosition(600,300)
-  .setRange(0,200)
-  //.setNumberOfTickMarks(20)
+  .setRange(0,300)
+  //.setNumberOfTickMarks(60)
   .setValue(80)
   ;
   
@@ -136,6 +183,46 @@ public void NEXTSTATE(int i) {
   println("next ani state");
 }
 
+public void PREVFONT(int i) {
+  if(!cpInitDone) return;
+  if(animation != null) {
+    selectFont--;
+    if(selectFont < 0) selectFont = fontNames.length-1;
+    initGrid();
+  }
+  println("prev font");
+}
+
+public void NEXTFONT(int i) {
+  if(!cpInitDone) return;
+  if(animation != null) {
+    selectFont++;
+    selectFont %= fontNames.length;
+    initGrid();
+  }
+  println("next font");
+}
+
+public void PREVCHARS(int i) {
+  if(!cpInitDone) return;
+  if(animation != null) {
+    selectSet--;
+    if(selectSet < 0) selectFont = charSets.length-1;
+    initGrid();
+  }
+  println("prev char set");
+}
+
+public void NEXTCHARS(int i) {
+  if(!cpInitDone) return;
+  if(animation != null) {
+    selectSet++;
+    selectSet %= charSets.length;
+    initGrid();
+  }
+  println("next char set");
+}
+
 public void export(int i) {
   if(!cpInitDone) return;
   exportToggle = !exportToggle;
@@ -145,6 +232,8 @@ public void export(int i) {
 void updateGUI() {
   if (!(stateLabel.getStringValue().equals(animation.getStateName()))) stateLabel.setText(animation.getStateName());
   fpsLabel.setText("FRAMERATE: "+ frameRate);
+  fontLabel.setText("FONT: "+ fontNames[selectFont]);
+  charsLabel.setText("SET: "+ charSets[selectSet]);
 }
 
 void movieEvent(Movie m) {

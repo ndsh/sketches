@@ -60,7 +60,7 @@ class Grid {
     int x = 0;
     int y = 0;
     for(int i = 0; i<amount; i++) {
-      flaps[i] = new Splitflap((x*tileSize[0]) + (tileSize[0]/2), (y*tileSize[1]) + (tileSize[1]/2), nuance, sortedCharacters, interval, cooldown);
+      flaps[i] = new Splitflap((x*tileSize[0]) + (tileSize[0]/2), (y*tileSize[1]) + (tileSize[1]/2), nuance, sortedCharacters, interval, cooldown, tileSize);
       x++;
       if(x >= gridSize) {
         x = 0;
@@ -97,10 +97,12 @@ class Grid {
       for(int x = 0; x<gridSize; x++) {
         c = averageColor(target, x*tileSize[0], y*tileSize[1], tileSize[0], tileSize[1]);
         b = brightness(c);
+        
         brightnessGrid.push();
         brightnessGrid.fill(b);
         brightnessGrid.rect(x*tileSize[0], y*tileSize[1], tileSize[0], tileSize[1]);
         brightnessGrid.pop();
+        
         int t = y*gridSize+x;
         int mapped = (int)map(b, 0, 255, 0, sortedCharacters.length()-1);
         //print(nf(mapped, 2) + " ");
@@ -125,7 +127,7 @@ class Grid {
   PImage getDisplay() {
     pg.beginDraw();
     pg.background(0);
-    pg.fill(255);
+    //pg.fill(255);
     pg.noStroke();
     for(int i = 0; i<flaps.length; i++) {      
       flaps[i].display(pg);
@@ -187,5 +189,9 @@ class Grid {
       flaps[i].updateCooldown(f);
     }
   }
+  
+  float[] getTilesize() {
+    return tileSize;
+  } 
 
 }

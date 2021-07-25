@@ -26,15 +26,22 @@ class Animation {
   final int ARCS = 9;
   final int ARCS_PERLIN = 10;
   final int DIAGONAL_BALLS = 11;
-  int state = ROTATING_BALL;
-  int maxStates = 12;
+  final int SWING = 12;
+  final int PARALLAX = 13;
+  final int FLOCK = 14;
+  final int CHARMORPH = 15;
+  final int STICKYFLOCK = 16;
+  int state = STICKYFLOCK;
+  int maxStates = 17;
   float mapped0 = 0;
   float mapped1 = 0;
   
   String[] stateNames = {
     "CIRCLE", "ELLIPSE", "SQUARE", "RECTANGLE", "MOVIE",
     "SINE", "THREE LINES", "CELLULAR AUTOMATA", "ROTATING BALL",
-    "ARCS", "ARCS PERLIN", "DIAGONAL BALLS"
+    "ARCS", "ARCS PERLIN", "DIAGONAL BALLS", "SWING", "PARALLAX",
+    "FLOCK", "CHARMORPH", "STICKYFLOCK"
+    
   };
   
   color fillColor = 0;
@@ -65,6 +72,10 @@ class Animation {
   float m = 0;
   float o = 0;
   
+  // FLOCK
+  Flock flock;
+  StickyFlock stickyFlock;
+  
   public Animation(PApplet _pa, int _w, int _h) {
     pa = _pa;
     w = _w;
@@ -77,9 +88,10 @@ class Animation {
     pg.noFill();
     pg.stroke(255);
     pg.strokeWeight(5);
+    pg.textFont(loadFont("AkkuratStd-Bold-80.vlw"));
     pg.endDraw();
     
-    movie = new Movie(pa, "../assets/spiral.mp4");
+    movie = new Movie(pa, "../assets/rollout.mp4");
     movie.loop();
     
     // SINEWAVE
@@ -89,7 +101,21 @@ class Animation {
     
     // CA
     int[] ruleset = {1,1,1,1,1,0,1,0};    // An initial rule system
-    ca = new CA(ruleset, pg);   
+    ca = new CA(ruleset, pg);
+    
+    // FLOCK
+    flock = new Flock();
+    // Add an initial set of boids into the system
+    for (int i = 0; i < 200; i++) {
+      flock.addBoid(new Boid(width/2,height/2));
+    }
+    
+    // STICKYFLOCK
+    stickyFlock = new StickyFlock();
+    // Add an initial set of boids into the system
+    for (int i = 0; i < 200; i++) {
+      stickyFlock.addBoid(new StickyBoid(width/2,height/2, grid.getTilesize()[0]));
+    }
   }
   
   void update() {
@@ -173,7 +199,8 @@ class Animation {
       case SINE:
         // Increment theta (try different values for 'angular velocity' here
         theta += 0.02;
-      
+        amplitude = 300;
+        if(xspacing != yvalues.length) yvalues = new float[w/xspacing];
         // For every x value, calculate a y value with sine function
         temp = theta;
         for (int i = 0; i < yvalues.length; i++) {
@@ -351,6 +378,89 @@ class Animation {
        
       break;
       
+      case SWING:
+        // Increment theta (try different values for 'angular velocity' here
+        theta += 0.02;
+        amplitude = w/3;
+        xspacing = 16;
+        if(xspacing != yvalues.length) yvalues = new float[h/xspacing];
+        // For every x value, calculate a y value with sine function
+        temp = theta;
+        for (int i = 0; i < yvalues.length; i++) {
+          yvalues[i] = sin(temp)*map(i, 0, yvalues.length, amplitude, 0);
+          temp+=dx;
+        }
+        pg.beginDraw();
+        pg.background(0);
+        pg.noStroke();
+        pg.fill(255);
+        // A simple way to draw the wave with an ellipse at each location
+        for (int i = 0; i < yvalues.length; i++) {
+          pg.ellipse(pg.width/2+yvalues[i], i*xspacing, 16, 16);
+        }
+         
+        pg.endDraw();
+      break;
+      
+      case PARALLAX:
+        theta += 0.02;
+        amplitude = 20;
+      
+        pg.beginDraw();
+        pg.background(0);
+        pg.noStroke();
+        pg.rectMode(CENTER);
+        pg.fill(255);
+        pg.textSize(300);
+        
+        temp = theta;
+        pg.rotate(radians(temp));
+        pg.text("hello", sin(temp)*amplitude+pg.width/2, pg.height/2);
+        
+         
+        pg.endDraw();
+      break;
+      
+      case FLOCK:
+        pg.beginDraw();
+        pg.background(0);
+        pg.ellipseMode(CENTER);
+        flock.run(pg);
+        pg.endDraw();
+      break;
+      
+      case CHARMORPH:
+        if(millis() - timestamp > interval) {
+          timestamp = millis();
+          target0 = random(1);
+          target1 = random(1);
+          fillColor = (int)random(120,255);
+          strokeColor = (int)random(120,255);
+        }
+        mapped0 = map(progress0, 0f, 1f, 0, pg.width);
+        mapped1 = map(progress1, 0f, 1f, 0, pg.width);
+        pg.beginDraw();
+        
+        
+        pg.background(0);
+        pg.textAlign(CENTER, CENTER);
+        pg.stroke(strokeColor);
+        pg.fill(fillColor);
+        pg.textSize(mapped0);
+        pg.text("Q", pg.width/2, pg.height/2);
+        pg.endDraw();
+        
+        Ani.to(this, 1.5, "progress0", target0);
+        Ani.to(this, 1.5, "progress1", target1);
+      break;
+      
+      case STICKYFLOCK:
+        pg.beginDraw();
+        pg.background(0);
+        pg.ellipseMode(CENTER);
+        stickyFlock.run(pg);
+        pg.endDraw();
+      break;
       
     }
     
@@ -376,100 +486,9 @@ class Animation {
   String getStateName() {
     return stateNames[state];
   }
-
-}
-
-class CA {
-
-  int[] cells;     // An array of 0s and 1s 
-  int generation;  // How many generations?
-  int scl;         // How many pixels wide/high is each cell?
-
-  int[] rules;     // An array to store the ruleset, for example {0,1,1,0,1,1,0,1}
-  PGraphics pg;
-
-  CA(int[] r, PGraphics _pg) {
-    pg = _pg;
-    rules = r;
-    scl = 1;
-    cells = new int[pg.width/scl];
-    restart();
-  }
   
-  // Set the rules of the CA
-  void setRules(int[] r) {
-    rules = r;
-  }
-  
-  // Make a random ruleset
-  void randomize() {
-    for (int i = 0; i < 8; i++) {
-      rules[i] = int(random(2));
-    }
-  }
-  
-  // Reset to generation 0
-  void restart() {
-    for (int i = 0; i < cells.length; i++) {
-      cells[i] = 0;
-    }
-    cells[cells.length/2] = 1;    // We arbitrarily start with just the middle cell having a state of "1"
-    generation = 0;
-  }
+  void updateSize(float f) {
+    stickyFlock.updateSize(f);
+  } 
 
-  // The process of creating the new generation
-  void generate() {
-    // First we create an empty array for the new values
-    int[] nextgen = new int[cells.length];
-    // For every spot, determine new state by examing current state, and neighbor states
-    // Ignore edges that only have one neighor
-    for (int i = 1; i < cells.length-1; i++) {
-      int left = cells[i-1];   // Left neighbor state
-      int me = cells[i];       // Current state
-      int right = cells[i+1];  // Right neighbor state
-      nextgen[i] = executeRules(left,me,right); // Compute next generation state based on ruleset
-    }
-    // Copy the array into current value
-    for (int i = 1; i < cells.length-1; i++) {
-      cells[i] = nextgen[i];
-    }
-    //cells = (int[]) nextgen.clone();
-    generation++;
-  }
-  
-  // This is the easy part, just draw the cells, fill 255 for '1', fill 0 for '0'
-  void render(PGraphics pg) {
-    for (int i = 0; i < cells.length; i++) {
-      if (cells[i] == 1) {
-        pg.fill(255);
-      } else { 
-        pg.fill(0);
-      }
-      pg.noStroke();
-      pg.rect(i*scl,generation*scl, scl,scl);
-    }
-  }
-  
-  // Implementing the Wolfram rules
-  // Could be improved and made more concise, but here we can explicitly see what is going on for each case
-  int executeRules (int a, int b, int c) {
-    if (a == 1 && b == 1 && c == 1) { return rules[0]; }
-    if (a == 1 && b == 1 && c == 0) { return rules[1]; }
-    if (a == 1 && b == 0 && c == 1) { return rules[2]; }
-    if (a == 1 && b == 0 && c == 0) { return rules[3]; }
-    if (a == 0 && b == 1 && c == 1) { return rules[4]; }
-    if (a == 0 && b == 1 && c == 0) { return rules[5]; }
-    if (a == 0 && b == 0 && c == 1) { return rules[6]; }
-    if (a == 0 && b == 0 && c == 0) { return rules[7]; }
-    return 0;
-  }
-  
-  // The CA is done if it reaches the bottom of the screen
-  boolean finished() {
-    if (generation > pg.height/scl) {
-       return true;
-    } else {
-       return false;
-    }
-  }
 }

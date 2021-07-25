@@ -11,19 +11,22 @@ class Splitflap {
   int nuance = 0;
   String vocabulary = "";
   
+  float[] tileSize = {0, 0};
+  
   boolean slowTrail = false; // mode if the trailing is linear or some kind of "slowing" down
   float inc = 1;
   float decrease = 0.1; // 0.032;
   
   PVector pos;
   
-  Splitflap(float x, float y, int n, String sorted, float _interval, float _cooldown) {
+  Splitflap(float x, float y, int n, String sorted, float _interval, float _cooldown, float[] _tileSize) {
     vocabulary = sorted;
     nuance = n;
     pos = new PVector(x, y);
     interval = _interval;
     originalInterval = interval;
     cooldown = _cooldown;
+    tileSize = _tileSize;
   }
   
   Splitflap(int x, int y) {
@@ -36,11 +39,20 @@ class Splitflap {
   }
   
   void display(PGraphics pg) {
-    int mapped = (int)map(value, 0, nuance, 0, vocabulary.length()-1);;
+    int mapped = (int)map(value, 0, nuance, 0, vocabulary.length()-1);
+    //pg.push();
+    pg.fill(0);
+    float margin = 0.5;
+    pg.rect(pos.x-margin, pos.y-margin, tileSize[0]-margin, tileSize[1]-margin); 
+    //pg.pop();
+    pg.fill(255);
     pg.text(vocabulary.charAt(mapped), pos.x, pos.y);
+    
+    
   }
   
   void update() {
+     
     if(hold) {
       if(millis() - timestamp > cooldown) {
         timestamp = millis();
