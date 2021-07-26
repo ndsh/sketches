@@ -6,18 +6,20 @@ PImage frame;
 color globalColor = 0;
 
 void setup() {
-  size(600, 600);
+  size(600, 600, P2D);
+  frameRate(30);
   surface.setLocation(0, 0);
   pg = createGraphics(width, height);
 
   // STICKYFLOCK
   stickyFlock = new StickyFlock();
   // Add an initial set of boids into the system
-  for (int i = 0; i < 600; i++) {
-    stickyFlock.addBoid(new StickyBoid(width/2, height/2, 7));
+  for (int i = 0; i < 2000; i++) {
+    //stickyFlock.addBoid(new StickyBoid(width/2, height/2, 10));
+    stickyFlock.addBoid(new StickyBoid(random(width), random(height), 10));
   }
 
-  frame = loadImage("f.png");
+  frame = loadImage("frtg2.png");
 }
 
 void draw() {

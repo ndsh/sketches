@@ -42,8 +42,13 @@ class StickyBoid {
   float size = 20;
   
   float sticky;
+  boolean isSticky = false;
   
   float c = 0.1;
+  
+  PVector sep;   // Separation
+  PVector ali;      // Alignment
+  PVector coh;  // Cohesion
 
   StickyBoid(float x, float y, float _size) {
     acceleration = new PVector(0, 0);
@@ -80,9 +85,9 @@ class StickyBoid {
 
   // We accumulate a new acceleration each time based on three rules
   void flock(ArrayList<StickyBoid> boids) {
-    PVector sep = separate(boids);   // Separation
-    PVector ali = align(boids);      // Alignment
-    PVector coh = cohesion(boids);   // Cohesion
+    sep = separate(boids);   // Separation
+    ali = align(boids);      // Alignment
+    coh = cohesion(boids);   // Cohesion
     // Arbitrarily weight these forces
     sep.mult(1.5);
     ali.mult(1.0);
@@ -104,13 +109,18 @@ class StickyBoid {
     position.add(velocity);
     // Reset accelertion to 0 each cycle
     acceleration.mult(0);
-    /*
+    
     if(sticky > 0.5) {
       PVector drag = drag();
       // Apply drag force to Mover
       applyForce(drag);
+      size = 4;
+      isSticky = true; 
+    } else {
+      size = 3;
+      isSticky = false;
     }
-    */
+    
     
     
     inc += 0.002;
