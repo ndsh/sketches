@@ -51,7 +51,7 @@ class StickyBoid {
   PVector coh;  // Cohesion
   
   long timestamp = 0;
-  long interval = 2000;
+  long interval = 5000;
 
   StickyBoid(float x, float y, float _size) {
     acceleration = new PVector(0, 0);
@@ -65,7 +65,7 @@ class StickyBoid {
 
     position = new PVector(x, y);
     r = 2.0;
-    maxspeed = 2;
+    maxspeed = 3;
     maxforce = 0.03;
   }
 
@@ -123,10 +123,10 @@ class StickyBoid {
       PVector drag = drag();
       // Apply drag force to Mover
       applyForce(drag);
-      size = 10;
+      size = 5;
       isSticky = true; 
     } else {
-      size = 10;
+      size = 5;
       isSticky = false;
     }
     

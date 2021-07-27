@@ -91,7 +91,7 @@ class Animation {
     pg.textFont(loadFont("AkkuratStd-Bold-80.vlw"));
     pg.endDraw();
     
-    movie = new Movie(pa, "../assets/cross.mp4");
+    movie = new Movie(pa, "../assets/test.mp4");
     movie.loop();
     
     // SINEWAVE
