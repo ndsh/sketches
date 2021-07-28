@@ -25,7 +25,7 @@ void setup() {
   // STICKYFLOCK
   stickyFlock = new StickyFlock();
   // Add an initial set of boids into the system
-  for (int i = 0; i < 2000; i++) {
+  for (int i = 0; i < 800; i++) {
     //stickyFlock.addBoid(new StickyBoid(width/2, height/2, 10));
     stickyFlock.addBoid(new StickyBoid(random(width), random(height), 20));
   }
