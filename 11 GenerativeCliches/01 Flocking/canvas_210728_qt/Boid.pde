@@ -15,6 +15,8 @@ class Boid {
   
   float sticky;
   boolean isSticky = false;
+  
+  float coefficent = 0.7; // for dragging
 
   Boid() {
     setupShape(0.5);
@@ -239,9 +241,20 @@ class Boid {
 
   void flock(ArrayList<Point> points) {
     //Flocking
-    applyForce(separationVector(points).mult(separationScaleSlider.getValue()));
-    applyForce(alignmentVector(points).mult(alignmentScaleSlider.getValue()));
-    applyForce(cohesionVector(points).mult(cohesionScaleSlider.getValue()));
+    if(isSticky) {
+      //applyForce(separationVector(points).mult(0)); // ergibt das inverse
+      //applyForce(separationVector(points).mult(10)); // jittery 
+      //applyForce(alignmentVector(points).mult(10));
+      applyForce(separationVector(points).mult(0.0));
+      applyForce(alignmentVector(points).mult(0.0));
+      applyForce(cohesionVector(points).mult(0.0));
+    } else {
+      applyForce(separationVector(points).mult(separationScaleSlider.getValue()));
+      applyForce(alignmentVector(points).mult(alignmentScaleSlider.getValue()));
+      applyForce(cohesionVector(points).mult(cohesionScaleSlider.getValue()));
+    }
+    
+
 
 //    applyForce(avoidPredators(predators).mult(0.08));
 
@@ -265,11 +278,22 @@ class Boid {
 
   void update() {
     if(isSticky) {
+      /*
       velocity.add(new PVector(0,0));
-      velocity.limit(0);
+      velocity.limit(maxSpeedSlider.getValue());
       position.add(new PVector(0,0));
   
       acceleration.mult(0);
+      */
+      velocity.add(acceleration);
+      velocity.limit(maxSpeedSlider.getValue());
+      position.add(velocity);
+
+      acceleration.mult(0);
+    
+      PVector drag = drag();
+      // Apply drag force to Mover
+      applyForce(drag);
     } else {
     velocity.add(acceleration);
     velocity.limit(maxSpeedSlider.getValue());
@@ -308,12 +332,13 @@ class Boid {
       //else     fill(boidsFillColorPicker.getColorValue());
       
       fill(boidsFillColorPicker.getColorValue());
+      //noFill();
       noStroke();
       //strokeWeight(boidsStrokeWeightSlider.getValue());
       //stroke(boidsStrokeColorPicker.getColorValue());
-      
       if (boidsSizeSlider != null)
-        circle(0, 0, boidsSizeSlider.getValue()*20);
+        circle(0, 0, boidsSizeSlider.getValue()*10);
+
        /* 
     } else if (boidApparenceRadioButton.getArrayValue()[2] == 1) {//Fish
       rotate(angle);
@@ -349,5 +374,19 @@ class Boid {
     //sticky = new PVector(t, t);
     //globalColor = pg.get(round(position.x), round(position.y));
     
+  }
+  
+  PVector drag() {
+    // Magnitude is coefficient * speed squared
+    float speed = velocity.mag();
+    float dragMagnitude = coefficent * speed * speed;
+
+    // Direction is inverse of velocity
+    PVector drag = velocity.copy();
+    drag.mult(-1);
+
+    // Scale according to magnitude
+    drag.setMag(dragMagnitude);
+    return drag;
   }
 }
