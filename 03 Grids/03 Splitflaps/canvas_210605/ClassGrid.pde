@@ -104,7 +104,9 @@ class Grid {
         brightnessGrid.pop();
         
         int t = y*gridSize+x;
-        int mapped = (int)map(b, 0, 255, 0, sortedCharacters.length()-1);
+        int mapped = 0;
+        if(!toggleBrightnessFlip) mapped = (int)map(b, 0, 255, 0, sortedCharacters.length()-1);
+        else mapped = (int)map(b, 0, 255, sortedCharacters.length()-1, 0);
         //print(nf(mapped, 2) + " ");
         flaps[t].setTarget(mapped);
         flaps[t].update();    

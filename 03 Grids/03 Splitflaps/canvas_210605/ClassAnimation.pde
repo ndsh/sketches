@@ -31,21 +31,26 @@ class Animation {
   final int FLOCK = 14;
   final int CHARMORPH = 15;
   final int STICKYFLOCK = 16;
-  int state = STICKYFLOCK;
-  int maxStates = 17;
-  float mapped0 = 0;
-  float mapped1 = 0;
+  final int FLOCKOVERLAY = 17;
+  int state = CIRCLE;
   
   String[] stateNames = {
     "CIRCLE", "ELLIPSE", "SQUARE", "RECTANGLE", "MOVIE",
     "SINE", "THREE LINES", "CELLULAR AUTOMATA", "ROTATING BALL",
     "ARCS", "ARCS PERLIN", "DIAGONAL BALLS", "SWING", "PARALLAX",
-    "FLOCK", "CHARMORPH", "STICKYFLOCK"
-    
+    "FLOCK", "CHARMORPH", "STICKYFLOCK", "FLOCKOVERLAY"
   };
   
-  color fillColor = 0;
+  boolean movieStopped = false;
+  
+  // temporary variables
+  float mapped0 = 0;
+  float mapped1 = 0;
+  
+  color fillColor = 255;
   color strokeColor = 255;
+  color tempFillColor = 255;
+  color tempStrokeColor = 255;
   
   Movie movie;
   
@@ -91,8 +96,9 @@ class Animation {
     pg.textFont(loadFont("AkkuratStd-Bold-80.vlw"));
     pg.endDraw();
     
-    movie = new Movie(pa, "../assets/test.mp4");
-    movie.loop();
+    //movie = new Movie(pa, "../assets/_MOV/faq2_clean.mp4");
+    //movie.loop();
+    //animation.setMovie(movFiles.get(movIndex));
     
     // SINEWAVE
     sine_width = pg.width+16;
@@ -127,7 +133,7 @@ class Animation {
         }
         mapped0 = map(progress0, 0f, 1f, 0, pg.width); 
         pg.beginDraw();
-        pg.background(0);
+        applyToggleStyles();
         pg.ellipse(pg.width/2, pg.height/2, mapped0, mapped0);
         pg.endDraw();
         
@@ -143,7 +149,7 @@ class Animation {
         mapped0 = map(progress0, 0f, 1f, 0, pg.width);
         mapped1 = map(progress1, 0f, 1f, 0, pg.width);
         pg.beginDraw();
-        pg.background(0);
+        applyToggleStyles();
         pg.ellipse(pg.width/2, pg.height/2, mapped0, mapped1);
         pg.endDraw();
         
@@ -158,9 +164,7 @@ class Animation {
         }
         mapped0 = map(progress0, 0f, 1f, 0, pg.width); 
         pg.beginDraw();
-        pg.background(0);
-        pg.stroke(strokeColor);
-        pg.fill(fillColor);
+        applyToggleStyles();
         pg.rect(pg.width/2, pg.height/2, mapped0, mapped0);
         pg.endDraw();
         
@@ -172,15 +176,13 @@ class Animation {
           timestamp = millis();
           target0 = random(1);
           target1 = random(1);
-          fillColor = (int)random(255);
-          strokeColor = (int)random(255);
+          tempFillColor = (int)random(255);
+          tempStrokeColor = (int)random(255);
         }
         mapped0 = map(progress0, 0f, 1f, 0, pg.width);
         mapped1 = map(progress1, 0f, 1f, 0, pg.width);
         pg.beginDraw();
-        pg.background(0);
-        pg.stroke(strokeColor);
-        pg.fill(fillColor);
+        applyToggleStyles(tempFillColor, tempStrokeColor);
         pg.rect(pg.width/2, pg.height/2, mapped0, mapped1);
         pg.endDraw();
         
@@ -189,8 +191,11 @@ class Animation {
       break;
       
       case MOVIE:
+        if(movieStopped || movie == null) {
+          animation.setMovie(movFiles.get(movIndex));
+          animation.startMovie();
+        }
         pg.beginDraw();
-        pg.background(0);
         pg.imageMode(CENTER);
         pg.image(movie, pg.width/2, pg.height/2); 
         pg.endDraw();
@@ -208,9 +213,9 @@ class Animation {
           temp+=dx;
         }
         pg.beginDraw();
-        pg.background(0);
-        pg.noStroke();
-        pg.fill(255);
+        //pg.noStroke();
+        //pg.fill(255);
+        applyToggleStyles();
         // A simple way to draw the wave with an ellipse at each location
         for (int i = 0; i < yvalues.length; i++) {
           pg.ellipse(i*xspacing, pg.height/2+yvalues[i], 16, 16);
@@ -223,25 +228,25 @@ class Animation {
       case THREE_LINES:
         theta += 0.005;
         pg.beginDraw();
-        pg.background(0);
-        pg.stroke(255);
+        //pg.stroke(255);
+        applyToggleStyles();
         pg.translate(pg.width/2, pg.height/2);
         pg.rotate(theta);
-        
+        pg.push();
         pg.strokeWeight(16);
         pg.line(0, 0, pg.width*2, pg.height*2);
         pg.rotate(radians(120));
         pg.line(0, 0, pg.width*2, pg.height*2);
         pg.rotate(radians(120));
         pg.line(0, 0, pg.width*2, pg.height*2);
-         
+        pg.pop();
         pg.endDraw();
         
       break;
       
       case CELLULAR_AUTOMATA:
         pg.beginDraw();
-        
+        applyToggleStyles();
         ca.render(pg);    // Draw the CA
         ca.generate();  // Generate the next level
         
@@ -266,14 +271,13 @@ class Animation {
         
         pg.beginDraw();
         //pg.background(0);
-        pg.fill(0, 0, 0, 20);
-        
+        applyToggleStyles(color(0, 0, 0, 20), color(0));
+        //pg.fill(0, 0, 0, 20);
         pg.rect(0, 0, pg.width*2, pg.height*2);
-        
-        
         pg.translate(pg.width/2, pg.height/2);
-        pg.noStroke();
-        pg.fill(255);
+        //pg.noStroke();
+        applyToggleStyles();
+        //pg.fill(255);
         // A simple way to draw the wave with an ellipse at each location
         pg.rotate(radians(theta*8));
         pg.translate(0*xspacing, 600+yvalues[0]);
@@ -285,28 +289,24 @@ class Animation {
       break;
       
       case ARCS:
-      
         theta += 0.02;
         pg.beginDraw();
-        pg.background(0);
-        pg.stroke(255);
+        applyToggleStyles();
         pg.translate(pg.width/2, pg.height/2);
         pg.rotate(theta);
         pg.ellipseMode(CENTER);
+        pg.push();
         pg.strokeWeight(16);
         pg.arc(0, 0, 100, 100, 0, HALF_PI);
         pg.rotate(radians(120));
         pg.arc(0, 0, 300, 300, 0, HALF_PI);
         pg.rotate(radians(120));
         pg.arc(0, 0, 500, 500, 0, HALF_PI);
-         
+        pg.pop();
         pg.endDraw();
-        
-
       break;
       
       case ARCS_PERLIN:
-      
         theta += 0.02;
         n = noise(xoff)*pg.width;
         m = noise(yoff)*pg.width;
@@ -321,18 +321,18 @@ class Animation {
         zoff += zincrement;
         
         pg.beginDraw();
-        pg.background(0);
-        pg.stroke(255);
+        applyToggleStyles();
         pg.translate(pg.width/2, pg.height/2);
         pg.rotate(theta);
         pg.ellipseMode(CENTER);
+        pg.push();
         pg.strokeWeight(16);
         pg.arc(0, 0, 100, 100, map(n, 0, pg.width, 0, PI), PI);
         pg.rotate(radians(120));
         pg.arc(0, 0, 300, 300, map(m, 0, pg.width, 0, PI), PI);
         pg.rotate(radians(120));
         pg.arc(0, 0, 500, 500, map(o, 0, pg.width, 0, PI), PI);
-        
+        pg.pop();
         
          
         pg.endDraw();
@@ -364,12 +364,12 @@ class Animation {
         
         
         pg.beginDraw();
-        pg.background(0);
         pg.translate(pg.width/2, pg.height/2);
         pg.rotate(-45);
         pg.ellipseMode(CENTER);
-        pg.noStroke();
-        pg.fill(255);
+        //pg.noStroke();
+        //pg.fill(255);
+        applyToggleStyles();
         pg.ellipse(xoff, n, 32, 32);
         pg.ellipse(yoff, m, 32, 32);
         pg.ellipse(zoff, o, 32, 32);
@@ -391,9 +391,9 @@ class Animation {
           temp+=dx;
         }
         pg.beginDraw();
-        pg.background(0);
-        pg.noStroke();
-        pg.fill(255);
+        //pg.noStroke();
+        //pg.fill(255);
+        applyToggleStyles();
         // A simple way to draw the wave with an ellipse at each location
         for (int i = 0; i < yvalues.length; i++) {
           pg.ellipse(pg.width/2+yvalues[i], i*xspacing, 16, 16);
@@ -407,10 +407,10 @@ class Animation {
         amplitude = 20;
       
         pg.beginDraw();
-        pg.background(0);
-        pg.noStroke();
+        //pg.noStroke();
         pg.rectMode(CENTER);
-        pg.fill(255);
+        //pg.fill(255);
+        applyToggleStyles();
         pg.textSize(300);
         
         temp = theta;
@@ -423,7 +423,7 @@ class Animation {
       
       case FLOCK:
         pg.beginDraw();
-        pg.background(0);
+        applyToggleStyles();
         pg.ellipseMode(CENTER);
         flock.run(pg);
         pg.endDraw();
@@ -434,18 +434,16 @@ class Animation {
           timestamp = millis();
           target0 = random(1);
           target1 = random(1);
-          fillColor = (int)random(120,255);
-          strokeColor = (int)random(120,255);
+          tempFillColor = (int)random(120,255);
+          tempStrokeColor = (int)random(120,255);
         }
         mapped0 = map(progress0, 0f, 1f, 0, pg.width);
         mapped1 = map(progress1, 0f, 1f, 0, pg.width);
         pg.beginDraw();
-        
-        
-        pg.background(0);
         pg.textAlign(CENTER, CENTER);
-        pg.stroke(strokeColor);
-        pg.fill(fillColor);
+        //pg.stroke(strokeColor);
+        //pg.fill(fillColor);
+        applyToggleStyles(tempFillColor, tempStrokeColor);
         pg.textSize(mapped0);
         pg.text("Q", pg.width/2, pg.height/2);
         pg.endDraw();
@@ -456,9 +454,19 @@ class Animation {
       
       case STICKYFLOCK:
         pg.beginDraw();
-        pg.background(0);
+        applyToggleStyles();
         pg.ellipseMode(CENTER);
         stickyFlock.run(pg);
+        pg.endDraw();
+      break;
+      
+      case FLOCKOVERLAY:
+        pg.beginDraw();
+        applyToggleStyles();
+        pg.ellipseMode(CENTER);
+        pg.imageMode(CENTER);
+        pg.image(movie, pg.width/2, pg.height/2);
+        flock.run(pg);
         pg.endDraw();
       break;
       
@@ -475,12 +483,12 @@ class Animation {
   
   void nextState() {
     state++;
-    state %= maxStates;
+    state %= stateNames.length;
   }
   
   void prevState() {
     state--;
-    if(state < 0) state = maxStates-1;
+    if(state < 0) state = stateNames.length-1;
   }
   
   String getStateName() {
@@ -490,5 +498,43 @@ class Animation {
   void updateSize(float f) {
     stickyFlock.updateSize(f);
   } 
+  
+  void setMovie(String s) {
+    System.gc();
+    movie = new Movie(pa, s);
+  }
+  
+  void stopMovie() {
+    if(movie != null) {
+      movie.stop();
+      movieStopped = true;
+    }
+  }
+  
+  void startMovie() {
+    if(movie != null) {
+      //movie.stop();
+      //movie.jump(0);
+      //movie.play();
+      movie.loop();
+      movieStopped = false;
+    }
+  }
+  
+  void applyToggleStyles() {
+    if(toggleBackground) pg.background(0);
+    if(toggleFill) pg.fill(fillColor);
+    else pg.noFill();
+    if(toggleStroke) pg.stroke(strokeColor);
+    else pg.noStroke();
+  }
+  
+  void applyToggleStyles(color c1, color c2) {
+    if(toggleFill) pg.fill(c1);
+    else pg.noFill();
+    if(toggleStroke) pg.stroke(c2);
+    else pg.noStroke();
+  }
+ 
 
 }

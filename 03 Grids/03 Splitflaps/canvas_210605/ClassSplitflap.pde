@@ -67,7 +67,8 @@ class Splitflap {
             if(interval >= decrease) interval -= decrease;
             
           }
-          value += inc;
+          if(toggleFlapping) value += inc;
+          else value = target;
           
           if(value > nuance) value = 0;
         } else if(value == target) {
