@@ -32,13 +32,15 @@ class Animation {
   final int CHARMORPH = 15;
   final int STICKYFLOCK = 16;
   final int FLOCKOVERLAY = 17;
-  int state = CIRCLE;
+  final int QTFLOCK = 18;
+  int state = QTFLOCK;
   
   String[] stateNames = {
     "CIRCLE", "ELLIPSE", "SQUARE", "RECTANGLE", "MOVIE",
     "SINE", "THREE LINES", "CELLULAR AUTOMATA", "ROTATING BALL",
     "ARCS", "ARCS PERLIN", "DIAGONAL BALLS", "SWING", "PARALLAX",
-    "FLOCK", "CHARMORPH", "STICKYFLOCK", "FLOCKOVERLAY"
+    "FLOCK", "CHARMORPH", "STICKYFLOCK", "FLOCKOVERLAY",
+    "QUADTREEFLOCKING"
   };
   
   boolean movieStopped = false;
@@ -122,11 +124,16 @@ class Animation {
     for (int i = 0; i < 200; i++) {
       stickyFlock.addBoid(new StickyBoid(width/2,height/2, grid.getTilesize()[0]));
     }
+    
+    // QTFLOCK
+    setupUI();
+    qtflock = new qtFlock(600);
   }
   
   void update() {
     switch(state) {
       case CIRCLE:
+        if(!movieStopped) stopMovie();
         if(millis() - timestamp > interval) {
           timestamp = millis();
           target0 = random(1);
@@ -192,8 +199,8 @@ class Animation {
       
       case MOVIE:
         if(movieStopped || movie == null) {
-          animation.setMovie(movFiles.get(movIndex));
-          animation.startMovie();
+          setMovie(movFiles.get(movIndex));
+          startMovie();
         }
         pg.beginDraw();
         pg.imageMode(CENTER);
@@ -461,6 +468,10 @@ class Animation {
       break;
       
       case FLOCKOVERLAY:
+        if(movieStopped || movie == null) {
+          animation.setMovie(movFiles.get(movIndex));
+          animation.startMovie();
+        }
         pg.beginDraw();
         applyToggleStyles();
         pg.ellipseMode(CENTER);
@@ -468,6 +479,36 @@ class Animation {
         pg.image(movie, pg.width/2, pg.height/2);
         flock.run(pg);
         pg.endDraw();
+      break;
+      
+      case QTFLOCK:
+        if(movieStopped || movie == null) {
+          animation.setMovie(movFiles.get(movIndex));
+          animation.startMovie();
+        }
+        globalFrame = movie;
+        globalFrame.loadPixels();
+        if(globalFrame.pixels.length <= 0) return;
+        
+        qtree = new QuadTree(new Rectangle(width/2, height/2, width, height), (int)quadTreeBoidPerSquareLimitSlider.getValue());
+        for (qtBoid boid : qtflock.boids) {
+          qtree.insert(new Point(boid.position.x, boid.position.y, boid));
+        }
+    
+        pg.beginDraw();
+        applyToggleStyles();
+        pg.ellipseMode(CENTER);
+        pg.imageMode(CORNER);
+        
+        //flock.run(pg);
+        qtflock.display(pg);
+        pg.endDraw();
+        
+        if (showQuadTreeCheckBox.getArrayValue()[0] == 1) {
+          qtree.show();
+        }
+        globalSticky = false;
+        pg.image(movie, 0, 0, 0, 0);
       break;
       
     }
@@ -535,6 +576,12 @@ class Animation {
     if(toggleStroke) pg.stroke(c2);
     else pg.noStroke();
   }
+  
+  Movie getFrame() {
+    return movie;
+  }
+  
+  
  
 
 }

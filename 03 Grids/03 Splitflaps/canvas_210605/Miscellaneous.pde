@@ -10,7 +10,7 @@ class CA {
   CA(int[] r, PGraphics _pg) {
     pg = _pg;
     rules = r;
-    scl = 1;
+    scl = 5;
     cells = new int[pg.width/scl];
     restart();
   }

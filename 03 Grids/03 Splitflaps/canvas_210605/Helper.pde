@@ -21,7 +21,20 @@ void keyPressed() {
       toggleIncrement = !toggleIncrement;
     }
   }
+  if (str(key).toLowerCase().equals("c")) {
+    showMouseCursorCheckBox.toggle(0);
+  }
   
+}
+
+void mousePressed() {
+  if (firstClick == false) {
+    firstClick = true;
+  } else {
+    if (mouseActionCheckBox.getArrayValue()[2] == 1) {
+      qtflock.boids.add(new qtBoid(new PVector(mouseX, mouseY)));
+    }
+  }
 }
 
 
@@ -441,9 +454,7 @@ void reloadFiles(String s) {
       imgIndex = 0;
       imgFiles = importer.getFiles();
     }
-  }
- 
-  
+  } 
 }
 
 String getFilename(String path) {
@@ -455,4 +466,15 @@ String shortenThis(String s) {
   if(s.length() > 21) return s.substring(0, 21) + "...";
   else return s;
   
+}
+
+void export(boolean b) {
+  if(b) {
+    grid.getDisplay().save("_EXPORT/"+folderFormat+"/"+ frameNr +".tga");
+    frameNr++;
+    push();
+    fill(255, 0, 0);
+    ellipse(570, 570, 20, 20);
+    pop();
+  }
 }

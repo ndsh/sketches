@@ -20,14 +20,16 @@
 // [ ] animation: gray scale animation
 // [x] animation: cellular automata
 // [ ] control playback speed of ani class
-// [ ] invert image
+// [x] invert image
 // [x] play / pause
 // [ ] fix character overlap!
 // [x] better debug view
-// [ ] importer
-// [ ] read movies dynamically and list them
-// [ ] read images dynamically and list them
+// [x] importer
+// [x] read movies dynamically and list them
+// [x] read images dynamically and list them
 // [ ] start/stop movies according to the states
+// [ ] geomerative import
+// [ ] stickyFlock quadtree import 
 
 
 // source: https://en.wikipedia.org/wiki/List_of_Unicode_characters
@@ -40,9 +42,10 @@ Grid grid;
 Animation animation;
 ControlP5 cp5;
 Importer importer;
+PImage globalFrame = null;
 
-int selectSet = 0;
-int selectFont = 4;
+int selectSet = 12;
+int selectFont = 0;
 
 
 int[][] resolutions = {
@@ -55,7 +58,7 @@ int[][] resolutions = {
   {1200, 1200}
 };
 int selectResolution = 0;
-int gridSize = 20; // 20x20
+int gridSize = 60; // 20x20
 
 float splitflapInterval = 2;
 float splitflapCooldown = 1;
@@ -65,13 +68,15 @@ boolean brightnessToggle = false;
 boolean cpInitDone = false;
 boolean toggleFeed = true;
 boolean toggleIncrement = true;
-boolean toggleDebugView = false;
+boolean toggleDebugView = true;
 boolean toggleFlapping = true;
 boolean togglePlay = true;
 boolean toggleStroke = true;
 boolean toggleFill = false;
 boolean toggleBackground = true;
 boolean toggleBrightnessFlip = false;
+
+boolean firstClick = false;
 
 int frameNr = 0;
 String y = year()+"";
@@ -81,6 +86,7 @@ String h = leadingZero(hour());
 String i = leadingZero(minute());
 String s = leadingZero(second());
 String folderFormat = y + m + d + "_" + h + i + s;
+
 StringList imgFiles;
 StringList movFiles;
 int imgIndex = 0;
@@ -105,13 +111,10 @@ void setup() {
   reloadFiles("_IMG");
 }
 
-
-
 void draw() {
   background(30);
   updateGUI();
   if(togglePlay) animation.update();
-  
   if(toggleFeed) grid.feed(animation.getDisplay());
   //grid.feed(loadImage("assets/frtgi.png"));
   grid.update();
@@ -129,14 +132,5 @@ void draw() {
   }
   
   if(brightnessToggle) image(grid.getBrightnessGrid(), 700, 10, 80, 80);
-  
-  if(toggleExport) {
-    grid.getDisplay().save("_EXPORT/"+folderFormat+"/"+ frameNr +".tga");
-    frameNr++;
-    push();
-    fill(255, 0, 0);
-    ellipse(570, 570, 20, 20);
-    pop();
-  }
-  
+  export(toggleExport);  
 }
