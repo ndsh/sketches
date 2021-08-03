@@ -211,7 +211,7 @@ class Boid {
     float temp = inc;
     
     pg.fill(200, 100);
-    pg.stroke(255);
+    //pg.stroke(255);
     pg.pushMatrix();
     pg.translate(position.x, position.y);
     //pg.rotate(theta);
@@ -222,7 +222,7 @@ class Boid {
     pg.endShape();
     */
     //pg.ellipseMode(CENTER);
-    pg.ellipse(0, 0, 2, 2);
+    pg.ellipse(0, 0, 10, 10);
     pg.popMatrix();
   }
   

@@ -57,7 +57,7 @@ int[][] resolutions = {
   {1080, 1080},
   {1200, 1200}
 };
-int selectResolution = 0;
+int selectResolution = 6;
 int gridSize = 60; // 20x20
 
 float splitflapInterval = 2;
@@ -128,12 +128,12 @@ void draw() {
   
   background(30);
   if(toggleDebugView) {
-    if(selectResolution == 0 || selectResolution == 5) image(animation.getDisplay(), 10, 10, 580, 580);
+    if(selectResolution == 0 || selectResolution == 5 || selectResolution == 6) image(animation.getDisplay(), 10, 10, 580, 580);
     else if(selectResolution == 1 || selectResolution == 3) image(animation.getDisplay(), 10, 10, 580, 326);
     else if(selectResolution == 2) image(animation.getDisplay(), 10, 10, 326, 580);
     image(grid.getDisplay(), 600, 10, 80, 80);
   } else {
-    if(selectResolution == 0 || selectResolution == 5) image(grid.getDisplay(), 10, 10, 580, 580);
+    if(selectResolution == 0 || selectResolution == 5 || selectResolution == 6) image(grid.getDisplay(), 10, 10, 580, 580);
     else if(selectResolution == 1 || selectResolution == 3) image(grid.getDisplay(), 10, 10, 580, 326);
     else if(selectResolution == 2) image(grid.getDisplay(), 10, 10, 326, 580);
     image(animation.getDisplay(), 600, 10, 80, 80);

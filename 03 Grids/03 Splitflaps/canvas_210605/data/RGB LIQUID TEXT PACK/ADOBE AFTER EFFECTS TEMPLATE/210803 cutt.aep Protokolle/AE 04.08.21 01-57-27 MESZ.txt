@@ -1,0 +1,1 @@
+Adobe After Effects v17.5.1 Macintosh 64 Renderprotokoll für Projekt '210803 cutt.aep'Rendervorgang gestartet am 04.08.21 um 01:57:27 MESZ  04.08.21 01:57:27 MESZ: Komposition '210803_1200x1200_cut_01' gestartet.  Sichern unter: /Users/julianhespenheide/Documents/Development/Git/sketches/03 Grids/03 Splitflaps/canvas_210605/assets/AE/210803_1200x1200_cut_01.mov  

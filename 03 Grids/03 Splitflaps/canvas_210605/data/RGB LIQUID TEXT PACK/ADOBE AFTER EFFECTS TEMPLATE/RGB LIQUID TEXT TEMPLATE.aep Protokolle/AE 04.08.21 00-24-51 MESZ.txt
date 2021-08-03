@@ -1,0 +1,1 @@
+  04.08.21 00:24:52 MESZ: Komposition 'ATemplate' gestartet.  Sichern unter: /Users/julianhespenheide/Documents/Development/Git/sketches/03 Grids/03 Splitflaps/canvas_210605/assets/AE/s1_full.mov    04.08.21 00:31:31 MESZ: Komposition 'ATemplate' beendet.  Bish. Renderz.: 6 Min., 40 Sek.Das Protokoll wurde am 04.08.21 um 00:31:32 MESZ geschlossen.
