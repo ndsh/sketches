@@ -55,6 +55,7 @@ class Animation {
   color tempStrokeColor = 255;
   
   Movie movie;
+  int newFrame = 0;
   
   /* SINEWAVE VARS */
   int xspacing = 16;   // How far apart should each horizontal location be spaced
@@ -128,6 +129,12 @@ class Animation {
     // QTFLOCK
     setupUI();
     qtflock = new qtFlock(600);
+    
+    // START AT LEAST ONE FRAME OF THE MOVIE
+    //setMovie(movFiles.get(movIndex));
+    //movie.play();
+    //movie.jump(0);
+    //movie.pause();
   }
   
   void update() {
@@ -145,6 +152,7 @@ class Animation {
         pg.endDraw();
         
         Ani.to(this, 1.5, "progress0", target0);
+        ready = true;
       break;
       
       case ELLIPSUS:
@@ -162,6 +170,7 @@ class Animation {
         
         Ani.to(this, 1.5, "progress0", target0);
         Ani.to(this, 1.5, "progress1", target1);
+        ready = true;
       break;
       
       case SQUAREY:
@@ -176,6 +185,7 @@ class Animation {
         pg.endDraw();
         
         Ani.to(this, 1.5, "progress0", target0);
+        ready = true;
       break;
       
       case RECTANGLE:
@@ -195,6 +205,7 @@ class Animation {
         
         Ani.to(this, 1.5, "progress0", target0);
         Ani.to(this, 1.5, "progress1", target1);
+        ready = true;
       break;
       
       case MOVIE:
@@ -206,6 +217,7 @@ class Animation {
         pg.imageMode(CENTER);
         pg.image(movie, pg.width/2, pg.height/2); 
         pg.endDraw();
+        
       break;
       
       case SINE:
@@ -229,7 +241,7 @@ class Animation {
         }
          
         pg.endDraw();
-        
+        ready = true;
       break;
       
       case THREE_LINES:
@@ -248,7 +260,7 @@ class Animation {
         pg.line(0, 0, pg.width*2, pg.height*2);
         pg.pop();
         pg.endDraw();
-        
+        ready = true;
       break;
       
       case CELLULAR_AUTOMATA:
@@ -263,6 +275,7 @@ class Animation {
           ca.restart();
         }
         pg.endDraw();
+        ready = true;
       break;
       
       case ROTATING_BALL:
@@ -292,7 +305,7 @@ class Animation {
         
          
         pg.endDraw();
-        
+        ready = true;
       break;
       
       case ARCS:
@@ -311,6 +324,7 @@ class Animation {
         pg.arc(0, 0, 500, 500, 0, HALF_PI);
         pg.pop();
         pg.endDraw();
+        ready = true;
       break;
       
       case ARCS_PERLIN:
@@ -343,7 +357,7 @@ class Animation {
         
          
         pg.endDraw();
-        
+        ready = true;
 
       break;
       
@@ -382,7 +396,7 @@ class Animation {
         pg.ellipse(zoff, o, 32, 32);
         //pg.strokeWeight(16);
         pg.endDraw();
-       
+        ready = true;
       break;
       
       case SWING:
@@ -407,6 +421,7 @@ class Animation {
         }
          
         pg.endDraw();
+        ready = true;
       break;
       
       case PARALLAX:
@@ -426,6 +441,7 @@ class Animation {
         
          
         pg.endDraw();
+        ready = true;
       break;
       
       case FLOCK:
@@ -434,6 +450,7 @@ class Animation {
         pg.ellipseMode(CENTER);
         flock.run(pg);
         pg.endDraw();
+        ready = true;
       break;
       
       case CHARMORPH:
@@ -457,6 +474,7 @@ class Animation {
         
         Ani.to(this, 1.5, "progress0", target0);
         Ani.to(this, 1.5, "progress1", target1);
+        ready = true;
       break;
       
       case STICKYFLOCK:
@@ -465,13 +483,16 @@ class Animation {
         pg.ellipseMode(CENTER);
         stickyFlock.run(pg);
         pg.endDraw();
+        ready = true;
       break;
       
       case FLOCKOVERLAY:
+      
         if(movieStopped || movie == null) {
           animation.setMovie(movFiles.get(movIndex));
           animation.startMovie();
         }
+        
         pg.beginDraw();
         applyToggleStyles();
         pg.ellipseMode(CENTER);
@@ -479,6 +500,11 @@ class Animation {
         pg.image(movie, pg.width/2, pg.height/2);
         flock.run(pg);
         pg.endDraw();
+        //if(ready) {
+          //setFrame(newFrame);
+          //newFrame++;
+          //newFrame %= getLength();
+        //}
       break;
       
       case QTFLOCK:
@@ -579,6 +605,33 @@ class Animation {
   
   Movie getFrame() {
     return movie;
+  }
+  
+  //int getFrame() {    
+  //  return ceil(movie.time() * 30) - 1;
+  //}
+ 
+  void setFrame(int n) {
+    movie.play();
+ 
+    // The duration of a single frame:
+    float frameDuration = 1.0 / movie.frameRate;
+ 
+    // We move to the middle of the frame by adding 0.5:
+    float where = (n + 0.5) * frameDuration; 
+ 
+    // Taking into account border effects:
+    float diff = movie.duration() - where;
+    if (diff < 0) {
+      where += diff - 0.25 * frameDuration;
+    }
+ 
+    movie.jump(where);
+    movie.pause();  
+  }  
+ 
+  int getLength() {
+    return int(movie.duration() * movie.frameRate);
   }
   
   

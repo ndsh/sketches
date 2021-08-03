@@ -9,6 +9,7 @@ void keyPressed() {
     if (key == 'e' || key == 'E' ) {
       toggleExport = !toggleExport;
       println("toggleExport= " + toggleExport);
+      if(toggleExport) exportCounter++;
     } else if (key == 'b' || key == 'B' ) {
       brightnessToggle = !brightnessToggle;
       println("brightnessToggle= " + brightnessToggle);
@@ -427,6 +428,7 @@ public void export(int i) {
   if(!cpInitDone) return;
   toggleExport = !toggleExport;
   println("toggleExport= " + toggleExport);
+  if(toggleExport) exportCounter++;
 }
 
 void updateGUI() {
@@ -440,6 +442,7 @@ void updateGUI() {
 
 void movieEvent(Movie m) {
   m.read();
+  ready = true;
 }
 
 void reloadFiles(String s) {
@@ -468,9 +471,9 @@ String shortenThis(String s) {
   
 }
 
-void export(boolean b) {
+void exportFrames(boolean b) {
   if(b) {
-    grid.getDisplay().save("_EXPORT/"+folderFormat+"/"+ frameNr +".tga");
+    grid.getDisplay().save("_EXPORT/"+folderFormat+"-"+exportCounter+"/"+ frameNr +".tga");
     frameNr++;
     push();
     fill(255, 0, 0);

@@ -1,0 +1,1 @@
+  02.08.21 20:29:36 MESZ: Komposition 'RENDER_2' gestartet.  Sichern unter: /Users/julianhespenheide/Documents/Development/Git/sketches/03 Grids/03 Splitflaps/canvas_210605/assets/AE/RENDER_2.mov    02.08.21 20:39:46 MESZ: Komposition 'RENDER_2' beendet.  Bish. Renderz.: 10 Min., 10 Sek.Das Protokoll wurde am 02.08.21 um 20:39:46 MESZ geschlossen.

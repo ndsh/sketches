@@ -44,7 +44,7 @@ ControlP5 cp5;
 Importer importer;
 PImage globalFrame = null;
 
-int selectSet = 12;
+int selectSet = 0;
 int selectFont = 0;
 
 
@@ -77,6 +77,7 @@ boolean toggleBackground = true;
 boolean toggleBrightnessFlip = false;
 
 boolean firstClick = false;
+boolean ready = false;
 
 int frameNr = 0;
 String y = year()+"";
@@ -91,6 +92,7 @@ StringList imgFiles;
 StringList movFiles;
 int imgIndex = 0;
 int movIndex = 0;
+int exportCounter = 0;
 
 void setup() {
   size(800, 600);
@@ -104,21 +106,27 @@ void setup() {
   cpInitDone = true;
   initGrid();
   
-  animation = new Animation(this, resolutions[selectResolution][0], resolutions[selectResolution][1]);
-  
   importer = new Importer("assets");
   reloadFiles("_MOV");
   reloadFiles("_IMG");
+  
+  animation = new Animation(this, resolutions[selectResolution][0], resolutions[selectResolution][1]);
+  
+  
 }
 
 void draw() {
-  background(30);
   updateGUI();
+  //if(!ready) return;
   if(togglePlay) animation.update();
+  
+  
+  
   if(toggleFeed) grid.feed(animation.getDisplay());
   //grid.feed(loadImage("assets/frtgi.png"));
   grid.update();
   
+  background(30);
   if(toggleDebugView) {
     if(selectResolution == 0 || selectResolution == 5) image(animation.getDisplay(), 10, 10, 580, 580);
     else if(selectResolution == 1 || selectResolution == 3) image(animation.getDisplay(), 10, 10, 580, 326);
@@ -132,5 +140,7 @@ void draw() {
   }
   
   if(brightnessToggle) image(grid.getBrightnessGrid(), 700, 10, 80, 80);
-  export(toggleExport);  
+  exportFrames(toggleExport);
+  ready = false;
+  //while(!ready) ;
 }
