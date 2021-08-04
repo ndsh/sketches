@@ -44,6 +44,7 @@ Animation animation;
 ControlP5 cp5;
 Importer importer;
 PImage globalFrame = null;
+PFont uiFont;
 
 int selectSet = 0;
 int selectFont = 0;
@@ -58,7 +59,7 @@ int[][] resolutions = {
   {1080, 1080},
   {1200, 1200}
 };
-int selectResolution = 6;
+int selectResolution = 0;
 int gridSize = 60; // 20x20
 
 float splitflapInterval = 2;
@@ -93,7 +94,7 @@ StringList imgFiles;
 StringList movFiles;
 int imgIndex = 0;
 int movIndex = 0;
-int exportCounter = 0;
+int exportCounter = -1;
 
 void setup() {
   size(800, 600);
@@ -102,6 +103,7 @@ void setup() {
   surface.setLocation(0, 0);
   surface.setTitle("ASCII Tool / 0.0.7");
   
+  uiFont = loadFont("SFMono-Regular-8.vlw");
   Ani.init(this);
   initCP5();
   cpInitDone = true;

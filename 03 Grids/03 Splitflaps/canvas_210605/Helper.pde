@@ -114,7 +114,9 @@ void initCP5() {
   charsLabel = cp5.addTextlabel("label4")
   .setText("CHARS=")
   .setPosition(600, 160)
+  .setFont(uiFont)
   ;
+  
   
   cp5.addButton("PREVCHARS")
   .setValue(0)
