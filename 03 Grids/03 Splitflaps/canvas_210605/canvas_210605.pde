@@ -58,7 +58,7 @@ int[][] resolutions = {
   {1080, 1080},
   {1200, 1200}
 };
-int selectResolution = 0;
+int selectResolution = 6;
 int gridSize = 60; // 20x20
 
 float splitflapInterval = 2;
@@ -78,7 +78,7 @@ boolean toggleBackground = true;
 boolean toggleBrightnessFlip = false;
 
 boolean firstClick = false;
-boolean ready = false;
+boolean frameReady = false;
 
 int frameNr = 0;
 String y = year()+"";
@@ -112,37 +112,21 @@ void setup() {
   reloadFiles("_IMG");
   
   animation = new Animation(this, resolutions[selectResolution][0], resolutions[selectResolution][1]);
-  
-  
 }
 
 void draw() {
   updateGUI();
-  //if(!ready) return;
   if(togglePlay) animation.update();
+  if(animation.ready()) {
+    if(toggleFeed) grid.feed(animation.getDisplay());
+    grid.update();
   
-  
-  
-  if(toggleFeed) grid.feed(animation.getDisplay());
-  //grid.feed(loadImage("assets/frtgi.png"));
-  grid.update();
-  
-  background(30);
-  int aspectRatio = detectResolution(resolutions[selectResolution][0], resolutions[selectResolution][1]);
-  if(toggleDebugView) {
-    if(aspectRatio == 0) image(animation.getDisplay(), 10, 10, 580, 580);
-    else if(aspectRatio == 1) image(animation.getDisplay(), 10, 10, 580, 326);
-    if(aspectRatio == 2) image(animation.getDisplay(), 10, 10, 326, 580);
-    image(grid.getDisplay(), 600, 10, 80, 80);
-  } else {
-    if(aspectRatio == 0) image(grid.getDisplay(), 10, 10, 580, 580);
-    else if(aspectRatio == 1) image(grid.getDisplay(), 10, 10, 580, 326);
-    if(aspectRatio == 2) image(grid.getDisplay(), 10, 10, 326, 580);
-    image(animation.getDisplay(), 600, 10, 80, 80);
+    background(30);
+    showWindows(detectResolution(resolutions[selectResolution][0], resolutions[selectResolution][1]));
+
+    if(brightnessToggle) image(grid.getBrightnessGrid(), 700, 10, 80, 80);
+    exportFrames(toggleExport);
   }
-  
-  if(brightnessToggle) image(grid.getBrightnessGrid(), 700, 10, 80, 80);
-  exportFrames(toggleExport);
-  ready = false;
-  //while(!ready) ;
+  animation.resetReadiness();
+  frameReady = false;
 }

@@ -452,7 +452,7 @@ void updateGUI() {
 
 void movieEvent(Movie m) {
   m.read();
-  ready = true;
+  frameReady = true;
 }
 
 void reloadFiles(String s) {
@@ -509,4 +509,19 @@ int detectResolution(int w, int h) {
   else if(w > h) result = 1;
   else if(w < h) result = 2;
   return result;
+}
+
+
+void showWindows(int aspectRatio) {
+  if(toggleDebugView) {
+    if(aspectRatio == 0) image(animation.getDisplay(), 10, 10, 580, 580);
+    else if(aspectRatio == 1) image(animation.getDisplay(), 10, 10, 580, 326);
+    if(aspectRatio == 2) image(animation.getDisplay(), 10, 10, 326, 580);
+    image(grid.getDisplay(), 600, 10, 80, 80);
+  } else {
+    if(aspectRatio == 0) image(grid.getDisplay(), 10, 10, 580, 580);
+    else if(aspectRatio == 1) image(grid.getDisplay(), 10, 10, 580, 326);
+    if(aspectRatio == 2) image(grid.getDisplay(), 10, 10, 326, 580);
+    image(animation.getDisplay(), 600, 10, 80, 80);
+  }
 }

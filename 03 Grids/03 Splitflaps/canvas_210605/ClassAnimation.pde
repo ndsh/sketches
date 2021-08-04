@@ -84,6 +84,8 @@ class Animation {
   Flock flock;
   StickyFlock stickyFlock;
   
+  boolean animationReady = false;
+  
   public Animation(PApplet _pa, int _w, int _h) {
     pa = _pa;
     w = _w;
@@ -152,7 +154,7 @@ class Animation {
         pg.endDraw();
         
         Ani.to(this, 1.5, "progress0", target0);
-        ready = true;
+        animationReady = true;
       break;
       
       case ELLIPSUS:
@@ -170,7 +172,7 @@ class Animation {
         
         Ani.to(this, 1.5, "progress0", target0);
         Ani.to(this, 1.5, "progress1", target1);
-        ready = true;
+        animationReady = true;
       break;
       
       case SQUAREY:
@@ -185,7 +187,7 @@ class Animation {
         pg.endDraw();
         
         Ani.to(this, 1.5, "progress0", target0);
-        ready = true;
+        animationReady = true;
       break;
       
       case RECTANGLE:
@@ -205,7 +207,7 @@ class Animation {
         
         Ani.to(this, 1.5, "progress0", target0);
         Ani.to(this, 1.5, "progress1", target1);
-        ready = true;
+        animationReady = true;
       break;
       
       case MOVIE:
@@ -213,10 +215,12 @@ class Animation {
           setMovie(movFiles.get(movIndex));
           startMovie();
         }
+        if(!frameReady) return;
         pg.beginDraw();
         pg.imageMode(CENTER);
         pg.image(movie, pg.width/2, pg.height/2); 
         pg.endDraw();
+        animationReady = true;
         
       break;
       
@@ -241,7 +245,7 @@ class Animation {
         }
          
         pg.endDraw();
-        ready = true;
+        animationReady = true;
       break;
       
       case THREE_LINES:
@@ -260,7 +264,7 @@ class Animation {
         pg.line(0, 0, pg.width*2, pg.height*2);
         pg.pop();
         pg.endDraw();
-        ready = true;
+        animationReady = true;
       break;
       
       case CELLULAR_AUTOMATA:
@@ -275,7 +279,7 @@ class Animation {
           ca.restart();
         }
         pg.endDraw();
-        ready = true;
+        animationReady = true;
       break;
       
       case ROTATING_BALL:
@@ -305,7 +309,7 @@ class Animation {
         
          
         pg.endDraw();
-        ready = true;
+        animationReady = true;
       break;
       
       case ARCS:
@@ -324,7 +328,7 @@ class Animation {
         pg.arc(0, 0, 500, 500, 0, HALF_PI);
         pg.pop();
         pg.endDraw();
-        ready = true;
+        animationReady = true;
       break;
       
       case ARCS_PERLIN:
@@ -357,8 +361,7 @@ class Animation {
         
          
         pg.endDraw();
-        ready = true;
-
+        animationReady = true;
       break;
       
       case DIAGONAL_BALLS:
@@ -396,7 +399,7 @@ class Animation {
         pg.ellipse(zoff, o, 32, 32);
         //pg.strokeWeight(16);
         pg.endDraw();
-        ready = true;
+        animationReady = true;
       break;
       
       case SWING:
@@ -421,7 +424,7 @@ class Animation {
         }
          
         pg.endDraw();
-        ready = true;
+        animationReady = true;
       break;
       
       case PARALLAX:
@@ -441,7 +444,7 @@ class Animation {
         
          
         pg.endDraw();
-        ready = true;
+        animationReady = true;
       break;
       
       case FLOCK:
@@ -450,7 +453,7 @@ class Animation {
         pg.ellipseMode(CENTER);
         flock.run(pg);
         pg.endDraw();
-        ready = true;
+        animationReady = true;
       break;
       
       case CHARMORPH:
@@ -474,7 +477,7 @@ class Animation {
         
         Ani.to(this, 1.5, "progress0", target0);
         Ani.to(this, 1.5, "progress1", target1);
-        ready = true;
+        animationReady = true;
       break;
       
       case STICKYFLOCK:
@@ -483,16 +486,14 @@ class Animation {
         pg.ellipseMode(CENTER);
         stickyFlock.run(pg);
         pg.endDraw();
-        ready = true;
+        animationReady = true;
       break;
       
       case FLOCKOVERLAY:
-      
         if(movieStopped || movie == null) {
           animation.setMovie(movFiles.get(movIndex));
           animation.startMovie();
         }
-        
         pg.beginDraw();
         applyToggleStyles();
         pg.ellipseMode(CENTER);
@@ -500,11 +501,7 @@ class Animation {
         pg.image(movie, pg.width/2, pg.height/2);
         flock.run(pg);
         pg.endDraw();
-        //if(ready) {
-          //setFrame(newFrame);
-          //newFrame++;
-          //newFrame %= getLength();
-        //}
+        animationReady = true;
       break;
       
       case QTFLOCK:
@@ -534,7 +531,8 @@ class Animation {
           qtree.show();
         }
         globalSticky = false;
-        pg.image(movie, 0, 0, 0, 0);
+        pg.image(movie, 0, 0, 0, 0); // stupid hack to advance the movie
+        animationReady = true;
       break;
       
     }
@@ -632,6 +630,14 @@ class Animation {
  
   int getLength() {
     return int(movie.duration() * movie.frameRate);
+  }
+  
+  boolean ready() {
+    return animationReady;
+  }
+  
+  void resetReadiness() {
+    animationReady = false;
   }
   
   
