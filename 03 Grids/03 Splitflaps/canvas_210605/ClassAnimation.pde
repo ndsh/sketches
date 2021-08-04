@@ -33,7 +33,7 @@ class Animation {
   final int STICKYFLOCK = 16;
   final int FLOCKOVERLAY = 17;
   final int QTFLOCK = 18;
-  int state = MOVIE;
+  int state = CIRCLE;
   
   String[] stateNames = {
     "CIRCLE", "ELLIPSE", "SQUARE", "RECTANGLE", "MOVIE",

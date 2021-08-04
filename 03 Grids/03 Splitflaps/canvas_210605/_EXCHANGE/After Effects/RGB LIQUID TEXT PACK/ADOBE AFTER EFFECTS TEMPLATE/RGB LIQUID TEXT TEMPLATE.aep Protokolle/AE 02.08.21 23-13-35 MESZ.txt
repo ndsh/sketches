@@ -1,0 +1,1 @@
+  02.08.21 23:13:35 MESZ: Komposition 'color' gestartet.  Sichern unter: /Users/julianhespenheide/Documents/Development/Git/sketches/03 Grids/03 Splitflaps/canvas_210605/assets/AE/color.mov    02.08.21 23:14:58 MESZ: Komposition 'color' beendet.  Bish. Renderz.: 1 Min., 23 Sek.Das Protokoll wurde am 02.08.21 um 23:14:58 MESZ geschlossen.

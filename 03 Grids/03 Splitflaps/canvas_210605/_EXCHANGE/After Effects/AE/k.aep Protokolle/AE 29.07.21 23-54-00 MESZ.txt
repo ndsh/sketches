@@ -1,0 +1,1 @@
+  29.07.21 23:54:00 MESZ: Komposition 'Komp' gestartet.  Sichern unter: /Users/julianhespenheide/Documents/Development/Git/sketches/03 Grids/03 Splitflaps/canvas_210605/assets/Komp.mov      Rendern vom Benutzer gestoppt.    29.07.21 23:54:15 MESZ: Komposition 'Komp' beendet.  Bish. Renderz.: 14 SekundenDas Protokoll wurde am 29.07.21 um 23:54:15 MESZ geschlossen.

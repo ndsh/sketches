@@ -6,6 +6,7 @@ class CA {
 
   int[] rules;     // An array to store the ruleset, for example {0,1,1,0,1,1,0,1}
   PGraphics pg;
+  boolean changingBehaviour = false;
 
   CA(int[] r, PGraphics _pg) {
     pg = _pg;
@@ -34,6 +35,18 @@ class CA {
     }
     cells[cells.length/2] = 1;    // We arbitrarily start with just the middle cell having a state of "1"
     generation = 0;
+    if(changingBehaviour) {
+      // simple changing behaviour to generate endless iterations of CAs
+      if(random(100) > 50) randomSize();
+      if(random(100) > 50) randomGridSize();
+      if(random(100) > 50) randomCharSet();
+      if(random(100) > 70) toggleBackground(true);
+      else toggleBackground(false);
+    }
+  }
+  
+  void randomSize() {
+    scl = (int)random(5,20);
   }
 
   // The process of creating the new generation

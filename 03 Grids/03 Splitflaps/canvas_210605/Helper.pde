@@ -321,6 +321,8 @@ public void PREVCHARS(int i) {
     initGrid();
   }
   println("prev char set");
+  print("PREV -- ");
+  println("charSets=" + charSets[selectSet]);
 }
 
 public void NEXTCHARS(int i) {
@@ -331,6 +333,8 @@ public void NEXTCHARS(int i) {
     initGrid();
   }
   println("next char set");
+  print("NEXT -- ");
+  println("charSets=" + charSets[selectSet]);
 }
 
 public void PREVIMG(int i) {
@@ -384,6 +388,12 @@ public void toggleReverseBrightness(int i) {
 public void toggleBackground(int i) {
   if(!cpInitDone) return;
   toggleBackground = !toggleBackground;
+  println("toggleBackground= " + toggleBackground);
+}
+
+public void toggleBackground(boolean b) {
+  if(!cpInitDone) return;
+  toggleBackground = b;
   println("toggleBackground= " + toggleBackground);
 }
 
@@ -480,4 +490,23 @@ void exportFrames(boolean b) {
     ellipse(570, 570, 20, 20);
     pop();
   }
+}
+
+void randomCharSet() {
+  selectSet = (int)random(0, charSets.length-1);
+  println("charSets=" + charSets[selectSet]);
+  initGrid();
+}
+
+void randomGridSize() {
+  int f = (int)random(20, 100);
+  gridSize(f);
+}
+
+int detectResolution(int w, int h) {
+  int result = 0;
+  if(w == h) result = 0;
+  else if(w > h) result = 1;
+  else if(w < h) result = 2;
+  return result;
 }

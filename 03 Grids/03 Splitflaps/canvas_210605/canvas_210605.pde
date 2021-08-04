@@ -29,7 +29,8 @@
 // [x] read images dynamically and list them
 // [ ] start/stop movies according to the states
 // [ ] geomerative import
-// [ ] stickyFlock quadtree import 
+// [ ] stickyFlock quadtree import
+// [ ] change resolution via controls
 
 
 // source: https://en.wikipedia.org/wiki/List_of_Unicode_characters
@@ -57,7 +58,7 @@ int[][] resolutions = {
   {1080, 1080},
   {1200, 1200}
 };
-int selectResolution = 6;
+int selectResolution = 0;
 int gridSize = 60; // 20x20
 
 float splitflapInterval = 2;
@@ -68,7 +69,7 @@ boolean brightnessToggle = false;
 boolean cpInitDone = false;
 boolean toggleFeed = true;
 boolean toggleIncrement = true;
-boolean toggleDebugView = true;
+boolean toggleDebugView = false;
 boolean toggleFlapping = true;
 boolean togglePlay = true;
 boolean toggleStroke = true;
@@ -127,15 +128,16 @@ void draw() {
   grid.update();
   
   background(30);
+  int aspectRatio = detectResolution(resolutions[selectResolution][0], resolutions[selectResolution][1]);
   if(toggleDebugView) {
-    if(selectResolution == 0 || selectResolution == 5 || selectResolution == 6) image(animation.getDisplay(), 10, 10, 580, 580);
-    else if(selectResolution == 1 || selectResolution == 3) image(animation.getDisplay(), 10, 10, 580, 326);
-    else if(selectResolution == 2) image(animation.getDisplay(), 10, 10, 326, 580);
+    if(aspectRatio == 0) image(animation.getDisplay(), 10, 10, 580, 580);
+    else if(aspectRatio == 1) image(animation.getDisplay(), 10, 10, 580, 326);
+    if(aspectRatio == 2) image(animation.getDisplay(), 10, 10, 326, 580);
     image(grid.getDisplay(), 600, 10, 80, 80);
   } else {
-    if(selectResolution == 0 || selectResolution == 5 || selectResolution == 6) image(grid.getDisplay(), 10, 10, 580, 580);
-    else if(selectResolution == 1 || selectResolution == 3) image(grid.getDisplay(), 10, 10, 580, 326);
-    else if(selectResolution == 2) image(grid.getDisplay(), 10, 10, 326, 580);
+    if(aspectRatio == 0) image(grid.getDisplay(), 10, 10, 580, 580);
+    else if(aspectRatio == 1) image(grid.getDisplay(), 10, 10, 580, 326);
+    if(aspectRatio == 2) image(grid.getDisplay(), 10, 10, 326, 580);
     image(animation.getDisplay(), 600, 10, 80, 80);
   }
   

@@ -1,0 +1,1 @@
+  03.08.21 01:35:50 MESZ: Komposition 'Komp 1' gestartet.  Sichern unter: /Users/julianhespenheide/Documents/Development/Git/sketches/03 Grids/03 Splitflaps/canvas_210605/assets/AE/Komp 1.mov    03.08.21 01:37:27 MESZ: Komposition 'Komp 1' beendet.  Bish. Renderz.: 1 Min., 37 Sek.Das Protokoll wurde am 03.08.21 um 01:37:27 MESZ geschlossen.
