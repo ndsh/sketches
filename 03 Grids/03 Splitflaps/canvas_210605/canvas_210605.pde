@@ -35,13 +35,13 @@
 
 // source: https://en.wikipedia.org/wiki/List_of_Unicode_characters
 
-import controlP5.*;
+
 import java.util.Collections;
 import processing.video.*;
 
 Grid grid;
 Animation animation;
-ControlP5 cp5;
+
 Importer importer;
 PImage globalFrame = null;
 PFont uiFont;
