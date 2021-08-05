@@ -15,7 +15,7 @@ class qtFlock{
   void display(PGraphics pg){
     for(qtBoid boid : boids){
       ArrayList<Point> query = qtree.query(new Circle(boid.position.x, boid.position.y, quadTreeBoidsPerceptionRadiuslider.getValue()), null);
-      boid.stickyCheck();
+      //boid.stickyCheck();
       boolean d = true;
       if(globalSticky && d) {
         temporaries[0] = 0.2; //seperation

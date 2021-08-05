@@ -8,8 +8,12 @@ class Animation {
   
   float progress0 = 0;
   float progress1 = 0;
+  float progress2 = 0;
+  float progress3 = 0;
   float target0 = 1;
   float target1 = 1;
+  float target2 = 1;
+  float target3 = 1;
   
   long timestamp = 0;
   long interval = 2500;
@@ -33,14 +37,15 @@ class Animation {
   final int STICKYFLOCK = 16;
   final int FLOCKOVERLAY = 17;
   final int QTFLOCK = 18;
-  int state = CIRCLE;
+  final int GRADIENTS = 19;
+  int state = GRADIENTS;
   
   String[] stateNames = {
     "CIRCLE", "ELLIPSE", "SQUARE", "RECTANGLE", "MOVIE",
     "SINE", "THREE LINES", "CELLULAR AUTOMATA", "ROTATING BALL",
     "ARCS", "ARCS PERLIN", "DIAGONAL BALLS", "SWING", "PARALLAX",
     "FLOCK", "CHARMORPH", "STICKYFLOCK", "FLOCKOVERLAY",
-    "QUADTREEFLOCKING"
+    "QUADTREEFLOCKING", "GRADIENTS"
   };
   
   boolean movieStopped = false;
@@ -505,14 +510,16 @@ class Animation {
       break;
       
       case QTFLOCK:
+      /*
         if(movieStopped || movie == null) {
           animation.setMovie(movFiles.get(movIndex));
           animation.startMovie();
         }
+        
         globalFrame = movie;
         globalFrame.loadPixels();
         if(globalFrame.pixels.length <= 0) return;
-        
+        */
         qtree = new QuadTree(new Rectangle(width/2, height/2, width, height), (int)quadTreeBoidPerSquareLimitSlider.getValue());
         for (qtBoid boid : qtflock.boids) {
           qtree.insert(new Point(boid.position.x, boid.position.y, boid));
@@ -531,7 +538,36 @@ class Animation {
           qtree.show();
         }
         globalSticky = false;
+
         pg.image(movie, 0, 0, 0, 0); // stupid hack to advance the movie
+        animationReady = true;
+
+        //pg.image(movie, 0, 0, 0, 0);
+
+      break;
+      
+      case GRADIENTS:
+      color c1 = color(0);
+      color c2 = color(255);
+      if(millis() - timestamp > interval) {
+          timestamp = millis();
+          target0 = random(0,pg.width/2);
+          target1 = random(0,pg.height/2);
+          target2 = random(pg.width);
+          target3 = random(pg.height);
+        }
+        
+        
+        pg.beginDraw();
+        applyToggleStyles();
+        pg.push();
+        setGradient((int)progress0, (int)progress1, (int)progress2, (int)progress3, c1, c2, Y_AXIS);
+        pg.pop();
+        pg.endDraw();
+        Ani.to(this, 1.5, "progress0", target0);
+        Ani.to(this, 1.5, "progress1", target1);
+        Ani.to(this, 1.5, "progress2", target2);
+        Ani.to(this, 1.5, "progress3", target3);
         animationReady = true;
       break;
       
@@ -640,7 +676,29 @@ class Animation {
     animationReady = false;
   }
   
-  
+  int Y_AXIS = 1;
+  int X_AXIS = 2;
+  void setGradient(int x, int y, float w, float h, color c1, color c2, int axis ) {
+    pg.push();
+    pg.noFill();
+
+    if (axis == Y_AXIS) {  // Top to bottom gradient
+      for (int i = y; i <= y+h; i++) {
+        float inter = map(i, y, y+h, 0, 1);
+        color c = lerpColor(c1, c2, inter);
+        pg.stroke(c);
+        pg.line(x, i, x+w, i);
+      }
+    } else if (axis == X_AXIS) {  // Left to right gradient
+      for (int i = x; i <= x+w; i++) {
+        float inter = map(i, x, x+w, 0, 1);
+        color c = lerpColor(c1, c2, inter);
+        pg.stroke(c);
+        pg.line(i, y, i, y+h);
+      }
+    }
+    pg.pop();
+  } 
  
 
 }
