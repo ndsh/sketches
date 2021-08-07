@@ -13,10 +13,26 @@ CheckBox playCheckbox;
 
 void initCP5() {
   cp5 = new ControlP5(this);
+
   
+  cp5.addTab("quadtree")
+  ;
+  
+  cp5.getTab("default")
+  .activateEvent(true)
+  .setLabel("general")
+  .setId(1)
+  ;
+
+  cp5.getTab("quadtree")
+  .activateEvent(true)
+  .setId(2)
+  ;
+  
+  // general tab
   fpsLabel = cp5.addTextlabel("label1")
   .setText("FRAMERATE=")
-  .setPosition(10, 10)
+  .setPosition(20, 20)
   ;
   
   stateLabel = cp5.addTextlabel("label2")
@@ -113,11 +129,13 @@ void initCP5() {
   ;
   
   // CHECKBOXES
+  /*
   playCheckbox = cp5.addCheckBox("playCheckbox")
   .setPosition(14, 30)
   .setSize(32, 8)
-  .addItem("play", 1)
+  .addItem("playY", 1)
   ;
+  */
   
   
   // SLIDERS
@@ -218,6 +236,7 @@ void initCP5() {
   //playCheckbox.setArrayValue((play?y:n));
   
   //cp5.getController("sliderBrightness").setValue(tempBrightness);
+  
 }
 
 void gridSize(int f) {
@@ -305,6 +324,7 @@ public void PREVIMG(int i) {
   if(animation != null) {
     imgIndex--;
     if(imgIndex < 0) imgIndex = imgFiles.size()-1;
+    animation.resetImage();
   }
   println("prev img");
 }
@@ -314,8 +334,10 @@ public void NEXTIMG(int i) {
   if(animation != null) {
     imgIndex++;
     imgIndex %= imgFiles.size();
+    animation.resetImage();
   }
   println("next img");
+  
 }
 
 public void PREVMOV(int i) {
@@ -402,6 +424,7 @@ public void export(int i) {
   toggleExport = !toggleExport;
   println("toggleExport= " + toggleExport);
   if(toggleExport) exportCounter++;
+  exportSettingsFile();
 }
 
 // CHECKBOX EVENTS

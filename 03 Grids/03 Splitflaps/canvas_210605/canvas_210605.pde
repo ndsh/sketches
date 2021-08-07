@@ -31,6 +31,11 @@
 // [ ] geomerative import
 // [ ] stickyFlock quadtree import
 // [ ] change resolution via controls
+// [ ] layer system
+// [ ] settings
+// [ ] remove stickyflock menu
+// [ ] flow field
+// [ ] turn off the "brightness mapping" / pixel density
 
 
 // source: https://en.wikipedia.org/wiki/List_of_Unicode_characters
@@ -41,15 +46,18 @@ import processing.video.*;
 
 Grid grid;
 Animation animation;
+int layers = 1;
+
 
 Importer importer;
 PImage globalFrame = null;
 PFont uiFont;
+PGraphics output;
 
 int selectSet = 0;
 int selectFont = 0;
 
-
+/*
 int[][] resolutions = {
   {600, 600},
   {1920, 1080},
@@ -59,7 +67,9 @@ int[][] resolutions = {
   {1080, 1080},
   {1200, 1200}
 };
-int selectResolution = 0;
+*/
+int[][] resolutions;
+int selectResolution = 6;
 int gridSize = 60; // 20x20
 
 float splitflapInterval = 2;
@@ -95,6 +105,7 @@ StringList movFiles;
 int imgIndex = 0;
 int movIndex = 0;
 int exportCounter = -1;
+String fontsFolder = "fonts/";
 
 void setup() {
   size(800, 600);
@@ -103,7 +114,7 @@ void setup() {
   surface.setLocation(0, 0);
   surface.setTitle("ASCII Tool / 0.0.7");
   
-  uiFont = loadFont("SFMono-Regular-8.vlw");
+  uiFont = loadFont(fontsFolder + "/SFMono-Regular-8.vlw");
   Ani.init(this);
   initCP5();
   cpInitDone = true;
@@ -114,6 +125,8 @@ void setup() {
   reloadFiles("_IMG");
   
   animation = new Animation(this, resolutions[selectResolution][0], resolutions[selectResolution][1]);
+  
+  loadSettings();
 }
 
 void draw() {
@@ -122,10 +135,8 @@ void draw() {
   if(animation.ready()) {
     if(toggleFeed) grid.feed(animation.getDisplay());
     grid.update();
-  
     background(30);
     showWindows(detectResolution(resolutions[selectResolution][0], resolutions[selectResolution][1]));
-
     if(brightnessToggle) image(grid.getBrightnessGrid(), 700, 10, 80, 80);
     exportFrames(toggleExport);
   }

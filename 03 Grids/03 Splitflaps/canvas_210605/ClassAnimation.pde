@@ -5,6 +5,7 @@ class Animation {
   int w;
   int h;
   PGraphics pg;
+  int layerID;
   
   float progress0 = 0;
   float progress1 = 0;
@@ -23,28 +24,29 @@ class Animation {
   final int SQUAREY = 2;
   final int RECTANGLE = 3;
   final int MOVIE = 4;
-  final int SINE = 5;
-  final int THREE_LINES = 6;
-  final int CELLULAR_AUTOMATA = 7;
-  final int ROTATING_BALL = 8;
-  final int ARCS = 9;
-  final int ARCS_PERLIN = 10;
-  final int DIAGONAL_BALLS = 11;
-  final int SWING = 12;
-  final int PARALLAX = 13;
-  final int FLOCK = 14;
-  final int CHARMORPH = 15;
-  final int STICKYFLOCK = 16;
-  final int FLOCKOVERLAY = 17;
-  final int QTFLOCK = 18;
-  final int GRADIENTS = 19;
-  int state = GRADIENTS;
+  final int STATIC = 5;
+  final int SINE = 6;
+  final int THREE_LINES = 7;
+  final int CELLULAR_AUTOMATA = 8;
+  final int ROTATING_BALL = 9;
+  final int ARCS = 10;
+  final int ARCS_PERLIN = 11;
+  final int DIAGONAL_BALLS = 12;
+  final int SWING = 13;
+  final int PARALLAX = 14;
+  final int FLOCK = 15;
+  final int CHARMORPH = 16;
+  final int STICKYFLOCK = 17;
+  final int FLOCKOVERLAY = 18;
+  final int QTFLOCK = 19;
+  final int GRADIENTS = 20;
+  int state = CIRCLE;
   
   String[] stateNames = {
     "CIRCLE", "ELLIPSE", "SQUARE", "RECTANGLE", "MOVIE",
-    "SINE", "THREE LINES", "CELLULAR AUTOMATA", "ROTATING BALL",
-    "ARCS", "ARCS PERLIN", "DIAGONAL BALLS", "SWING", "PARALLAX",
-    "FLOCK", "CHARMORPH", "STICKYFLOCK", "FLOCKOVERLAY",
+    "IMAGE","SINE", "THREE LINES", "CELLULAR AUTOMATA",
+    "ROTATING BALL", "ARCS", "ARCS PERLIN", "DIAGONAL BALLS", "SWING",
+    "PARALLAX", "FLOCK", "CHARMORPH", "STICKYFLOCK", "FLOCKOVERLAY",
     "QUADTREEFLOCKING", "GRADIENTS"
   };
   
@@ -60,6 +62,7 @@ class Animation {
   color tempStrokeColor = 255;
   
   Movie movie;
+  PImage p;
   int newFrame = 0;
   
   /* SINEWAVE VARS */
@@ -103,7 +106,7 @@ class Animation {
     pg.noFill();
     pg.stroke(255);
     pg.strokeWeight(5);
-    pg.textFont(loadFont("AkkuratStd-Bold-80.vlw"));
+    pg.textFont(loadFont(fontsFolder + "AkkuratStd-Bold-80.vlw"));
     pg.endDraw();
     
     //movie = new Movie(pa, "../assets/_MOV/faq2_clean.mp4");
@@ -122,8 +125,8 @@ class Animation {
     // FLOCK
     flock = new Flock();
     // Add an initial set of boids into the system
-    for (int i = 0; i < 200; i++) {
-      flock.addBoid(new Boid(width/2,height/2));
+    for (int i = 0; i < 250; i++) {
+      flock.addBoid(new Boid(random(width),random(height)));
     }
     
     // STICKYFLOCK
@@ -136,6 +139,7 @@ class Animation {
     // QTFLOCK
     setupUI();
     qtflock = new qtFlock(600);
+    
     
     // START AT LEAST ONE FRAME OF THE MOVIE
     //setMovie(movFiles.get(movIndex));
@@ -163,6 +167,7 @@ class Animation {
       break;
       
       case ELLIPSUS:
+        if(!movieStopped) stopMovie();
         if(millis() - timestamp > interval) {
           timestamp = millis();
           target0 = random(1);
@@ -181,6 +186,7 @@ class Animation {
       break;
       
       case SQUAREY:
+        if(!movieStopped) stopMovie();
         if(millis() - timestamp > interval) {
           timestamp = millis();
           target0 = random(1);
@@ -196,6 +202,7 @@ class Animation {
       break;
       
       case RECTANGLE:
+        if(!movieStopped) stopMovie();
         if(millis() - timestamp > interval) {
           timestamp = millis();
           target0 = random(1);
@@ -226,25 +233,32 @@ class Animation {
         pg.image(movie, pg.width/2, pg.height/2); 
         pg.endDraw();
         animationReady = true;
-        
+      break;
+      
+      case STATIC:
+        if(!movieStopped) stopMovie();
+        if(p == null) {
+          p = loadImage(imgFiles.get(imgIndex));
+        }
+        pg.beginDraw();
+        pg.imageMode(CORNER);
+        pg.image(p, 0, 0, pg.width, pg.height); 
+        pg.endDraw();
+        animationReady = true;
       break;
       
       case SINE:
-        // Increment theta (try different values for 'angular velocity' here
+        if(!movieStopped) stopMovie();
         theta += 0.02;
         amplitude = 300;
         if(xspacing != yvalues.length) yvalues = new float[w/xspacing];
-        // For every x value, calculate a y value with sine function
         temp = theta;
         for (int i = 0; i < yvalues.length; i++) {
           yvalues[i] = sin(temp)*amplitude;
           temp+=dx;
         }
         pg.beginDraw();
-        //pg.noStroke();
-        //pg.fill(255);
         applyToggleStyles();
-        // A simple way to draw the wave with an ellipse at each location
         for (int i = 0; i < yvalues.length; i++) {
           pg.ellipse(i*xspacing, pg.height/2+yvalues[i], 16, 16);
         }
@@ -254,6 +268,7 @@ class Animation {
       break;
       
       case THREE_LINES:
+        if(!movieStopped) stopMovie();
         theta += 0.005;
         pg.beginDraw();
         //pg.stroke(255);
@@ -273,13 +288,13 @@ class Animation {
       break;
       
       case CELLULAR_AUTOMATA:
+        if(!movieStopped) stopMovie();
         pg.beginDraw();
         applyToggleStyles();
         ca.render(pg);    // Draw the CA
         ca.generate();  // Generate the next level
         
         if (ca.finished()) {   // If we're done, clear the screen, pick a new ruleset and restart
-          //pg.background(0);
           ca.randomize();
           ca.restart();
         }
@@ -288,36 +303,27 @@ class Animation {
       break;
       
       case ROTATING_BALL:
+        if(!movieStopped) stopMovie();
         amplitude = 300.0;
-        // Increment theta (try different values for 'angular velocity' here
         theta += 0.05;
-      
-        // For every x value, calculate a y value with sine function
         temp = theta;
-        
         yvalues[0] = sin(temp)*amplitude;
         temp+=dx;
         
         pg.beginDraw();
-        //pg.background(0);
         applyToggleStyles(color(0, 0, 0, 20), color(0));
-        //pg.fill(0, 0, 0, 20);
         pg.rect(0, 0, pg.width*2, pg.height*2);
         pg.translate(pg.width/2, pg.height/2);
-        //pg.noStroke();
         applyToggleStyles();
-        //pg.fill(255);
-        // A simple way to draw the wave with an ellipse at each location
         pg.rotate(radians(theta*8));
         pg.translate(0*xspacing, 600+yvalues[0]);
         pg.ellipse(0, -600, 64, 64);
-        
-         
         pg.endDraw();
         animationReady = true;
       break;
       
       case ARCS:
+        if(!movieStopped) stopMovie();
         theta += 0.02;
         pg.beginDraw();
         applyToggleStyles();
@@ -337,6 +343,7 @@ class Animation {
       break;
       
       case ARCS_PERLIN:
+        if(!movieStopped) stopMovie();
         theta += 0.02;
         n = noise(xoff)*pg.width;
         m = noise(yoff)*pg.width;
@@ -370,6 +377,7 @@ class Animation {
       break;
       
       case DIAGONAL_BALLS:
+        if(!movieStopped) stopMovie();
         xoff += xincrement;
         if(xoff >= pg.width+(pg.width/4)) {
           xoff = -(pg.width+(pg.width/4));
@@ -391,7 +399,6 @@ class Animation {
           zincrement = random(5);
         }
         
-        
         pg.beginDraw();
         pg.translate(pg.width/2, pg.height/2);
         pg.rotate(-45);
@@ -408,23 +415,19 @@ class Animation {
       break;
       
       case SWING:
-        // Increment theta (try different values for 'angular velocity' here
-        theta += 0.02;
+        if(!movieStopped) stopMovie();
+        theta += 0.02; // Increment theta (try different values for 'angular velocity' here
         amplitude = w/3;
         xspacing = 16;
         if(xspacing != yvalues.length) yvalues = new float[h/xspacing];
-        // For every x value, calculate a y value with sine function
         temp = theta;
         for (int i = 0; i < yvalues.length; i++) {
           yvalues[i] = sin(temp)*map(i, 0, yvalues.length, amplitude, 0);
           temp+=dx;
         }
         pg.beginDraw();
-        //pg.noStroke();
-        //pg.fill(255);
         applyToggleStyles();
-        // A simple way to draw the wave with an ellipse at each location
-        for (int i = 0; i < yvalues.length; i++) {
+        for (int i = 0; i < yvalues.length; i++) { // A simple way to draw the wave with an ellipse at each location
           pg.ellipse(pg.width/2+yvalues[i], i*xspacing, 16, 16);
         }
          
@@ -433,26 +436,22 @@ class Animation {
       break;
       
       case PARALLAX:
+        if(!movieStopped) stopMovie();
         theta += 0.02;
         amplitude = 20;
-      
         pg.beginDraw();
-        //pg.noStroke();
         pg.rectMode(CENTER);
-        //pg.fill(255);
         applyToggleStyles();
         pg.textSize(300);
-        
         temp = theta;
         pg.rotate(radians(temp));
         pg.text("hello", sin(temp)*amplitude+pg.width/2, pg.height/2);
-        
-         
         pg.endDraw();
         animationReady = true;
       break;
       
       case FLOCK:
+        if(!movieStopped) stopMovie();
         pg.beginDraw();
         applyToggleStyles();
         pg.ellipseMode(CENTER);
@@ -462,6 +461,7 @@ class Animation {
       break;
       
       case CHARMORPH:
+        if(!movieStopped) stopMovie();
         if(millis() - timestamp > interval) {
           timestamp = millis();
           target0 = random(1);
@@ -486,6 +486,7 @@ class Animation {
       break;
       
       case STICKYFLOCK:
+        if(!movieStopped) stopMovie();
         pg.beginDraw();
         applyToggleStyles();
         pg.ellipseMode(CENTER);
@@ -499,6 +500,7 @@ class Animation {
           animation.setMovie(movFiles.get(movIndex));
           animation.startMovie();
         }
+        if(!frameReady) return;
         pg.beginDraw();
         applyToggleStyles();
         pg.ellipseMode(CENTER);
@@ -539,7 +541,7 @@ class Animation {
         }
         globalSticky = false;
 
-        pg.image(movie, 0, 0, 0, 0); // stupid hack to advance the movie
+        //pg.image(movie, 0, 0, 0, 0); // stupid hack to advance the movie
         animationReady = true;
 
         //pg.image(movie, 0, 0, 0, 0);
@@ -547,14 +549,23 @@ class Animation {
       break;
       
       case GRADIENTS:
-      color c1 = color(0);
-      color c2 = color(255);
-      if(millis() - timestamp > interval) {
+        color c1 = color(40);
+        color c2 = color(255);
+        if(millis() - timestamp > interval) {
           timestamp = millis();
-          target0 = random(0,pg.width/2);
-          target1 = random(0,pg.height/2);
-          target2 = random(pg.width);
-          target3 = random(pg.height);
+          float a = pg.width/12*2;
+          float b = pg.width/12*4;
+          float c = pg.width/12*6;
+          float d = pg.width/12*8;
+          
+          float e = pg.height/12*2;
+          float f = pg.height/12*4;
+          float g = pg.height/12*6;
+          float h = pg.height/12*8;
+          target0 = random(a,b);
+          target1 = random(e,f);
+          target2 = random(c,d);
+          target3 = random(g,h);
         }
         
         
@@ -674,6 +685,10 @@ class Animation {
   
   void resetReadiness() {
     animationReady = false;
+  }
+  
+  void resetImage() {
+    p = null;
   }
   
   int Y_AXIS = 1;

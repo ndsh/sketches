@@ -1,5 +1,4 @@
 class CA {
-
   int[] cells;     // An array of 0s and 1s 
   int generation;  // How many generations?
   int scl;         // How many pixels wide/high is each cell?
@@ -106,53 +105,47 @@ class CA {
   }
 }
 
+//
+// END OF CA CLASS
+// ---------------
+
 // The Flock (a list of Boid objects)
-
 class Flock {
-  ArrayList<Boid> boids; // An ArrayList for all the boids
-
+  ArrayList<Boid> boids;
   Flock() {
-    boids = new ArrayList<Boid>(); // Initialize the ArrayList
+    boids = new ArrayList<Boid>();
   }
 
   void run(PGraphics pg) {
     for (Boid b : boids) {
-      b.run(boids, pg);  // Passing the entire list of boids to each boid individually
+      b.run(boids, pg);
     }
   }
 
   void addBoid(Boid b) {
     boids.add(b);
   }
+  
 
 }
 
-
-
-
 // The Boid class
-
 class Boid {
-
   PVector position;
   PVector velocity;
   PVector acceleration;
   float r;
   float maxforce;    // Maximum steering force
   float maxspeed;    // Maximum speed
-  
   float inc = 0;
 
-    Boid(float x, float y) {
+  Boid(float x, float y) {
     acceleration = new PVector(0, 0);
-
     // This is a new PVector method not yet implemented in JS
-    // velocity = PVector.random2D();
-
+    //velocity = PVector.random2D();
     // Leaving the code temporarily this way so that this example runs in JS
     float angle = random(TWO_PI);
     velocity = new PVector(cos(angle), sin(angle));
-
     position = new PVector(x, y);
     r = 2.0;
     maxspeed = 2;
@@ -167,8 +160,7 @@ class Boid {
   }
 
   void applyForce(PVector force) {
-    // We could add mass here if we want A = F / M
-    acceleration.add(force);
+    acceleration.add(force); // We could add mass here if we want A = F / M
   }
 
   // We accumulate a new acceleration each time based on three rules
@@ -188,14 +180,10 @@ class Boid {
 
   // Method to update position
   void update() {
-    // Update velocity
-    velocity.add(acceleration);
-    // Limit speed
-    velocity.limit(maxspeed);
+    velocity.add(acceleration); // Update velocity
+    velocity.limit(maxspeed); // Limit speed
     position.add(velocity);
-    // Reset accelertion to 0 each cycle
-    acceleration.mult(0);
-    
+    acceleration.mult(0); // Reset accelertion to 0 each cycle
     inc += 0.002;
   }
 
@@ -219,39 +207,19 @@ class Boid {
 
   void render(PGraphics pg) {
     // Draw a triangle rotated in the direction of velocity
-    float theta = velocity.heading2D() + radians(90);
+    //float theta = velocity.heading2D() + radians(90);
     // heading2D() above is now heading() but leaving old syntax until Processing.js catches up
-    float temp = inc;
+    //float temp = inc;
     
     pg.fill(200, 100);
     //pg.stroke(255);
     pg.pushMatrix();
     pg.translate(position.x, position.y);
     //pg.rotate(theta);
-    /*pg.beginShape(TRIANGLES);
-    pg.vertex(0, -r*2);
-    pg.vertex(-r, r*2);
-    pg.vertex(r, r*2);
-    pg.endShape();
-    */
     //pg.ellipseMode(CENTER);
     pg.ellipse(0, 0, 10, 10);
     pg.popMatrix();
   }
-  
-  /*
-       yvalues[i] = sin(temp)*amplitude;
-          temp+=dx;
-        }
-        pg.beginDraw();
-        pg.background(0);
-        pg.noStroke();
-        pg.fill(255);
-        // A simple way to draw the wave with an ellipse at each location
-        for (int i = 0; i < yvalues.length; i++) {
-          pg.ellipse(i*xspacing, pg.height/2+yvalues[i], 16, 16);
-        }
-  */
 
   // Wraparound
   void borders(PGraphics pg) {
@@ -261,17 +229,16 @@ class Boid {
     if (position.y > pg.height+r) position.y = -r;
   }
 
-  // Separation
-  // Method checks for nearby boids and steers away
+  // Separation // Method checks for nearby boids and steers away
+  
   PVector separate (ArrayList<Boid> boids) {
     float desiredseparation = 25.0f;
     PVector steer = new PVector(0, 0, 0);
     int count = 0;
-    // For every boid in the system, check if it's too close
-    for (Boid other : boids) {
+    
+    for (Boid other : boids) { // For every boid in the system, check if it's too close
       float d = PVector.dist(position, other.position);
-      // If the distance is greater than 0 and less than an arbitrary amount (0 when you are yourself)
-      if ((d > 0) && (d < desiredseparation)) {
+      if ((d > 0) && (d < desiredseparation)) {   // If the distance is greater than 0 and less than an arbitrary amount (0 when you are yourself)
         // Calculate vector pointing away from neighbor
         PVector diff = PVector.sub(position, other.position);
         diff.normalize();
@@ -280,9 +247,9 @@ class Boid {
         count++;            // Keep track of how many
       }
     }
-    // Average -- divide by how many
+    
     if (count > 0) {
-      steer.div((float)count);
+      steer.div((float)count); // Average -- divide by how many
     }
 
     // As long as the vector is greater than 0
@@ -300,9 +267,8 @@ class Boid {
     return steer;
   }
 
-  // Alignment
-  // For every nearby boid in the system, calculate the average velocity
-  PVector align (ArrayList<Boid> boids) {
+  // Alignment // For every nearby boid in the system, calculate the average velocity
+  PVector align (ArrayList<Boid> boids) { 
     float neighbordist = 50;
     PVector sum = new PVector(0, 0);
     int count = 0;
@@ -331,8 +297,7 @@ class Boid {
     }
   }
 
-  // Cohesion
-  // For the average position (i.e. center) of all nearby boids, calculate steering vector towards that position
+  // Cohesion // For the average position (i.e. center) of all nearby boids, calculate steering vector towards that position
   PVector cohesion (ArrayList<Boid> boids) {
     float neighbordist = 50;
     PVector sum = new PVector(0, 0);   // Start with empty vector to accumulate all positions
@@ -356,23 +321,16 @@ class Boid {
 
 
 
-/*
+//
+// END OF NORMAL FLOCKING CLASS
+// ---------------
 
-
-
-
-
-
-*/
-
-// Sticky Flocking
-// The Flock (a list of Boid objects)
-
+// Sticky Flocking // The Flock (a list of Boid objects)
 class StickyFlock {
-  ArrayList<StickyBoid> boids; // An ArrayList for all the boids
+  ArrayList<StickyBoid> boids;
 
   StickyFlock() {
-    boids = new ArrayList<StickyBoid>(); // Initialize the ArrayList
+    boids = new ArrayList<StickyBoid>();
   }
 
   void run(PGraphics pg) {
@@ -390,14 +348,9 @@ class StickyFlock {
       b.updateSize(_size);
     }
   }
-
 }
 
-
-
-
 // The Boid class
-
 class StickyBoid {
 
   PVector position;
@@ -409,14 +362,11 @@ class StickyBoid {
   
   float inc = 0;
   float size = 20;
+  boolean isSticky = false;
 
   StickyBoid(float x, float y, float _size) {
     acceleration = new PVector(0, 0);
     size = _size;
-    // This is a new PVector method not yet implemented in JS
-    // velocity = PVector.random2D();
-
-    // Leaving the code temporarily this way so that this example runs in JS
     float angle = random(TWO_PI);
     velocity = new PVector(cos(angle), sin(angle));
 
@@ -488,41 +438,13 @@ class StickyBoid {
     return steer;
   }
 
-  void render(PGraphics pg) {
-    // Draw a triangle rotated in the direction of velocity
-    float theta = velocity.heading2D() + radians(90);
-    // heading2D() above is now heading() but leaving old syntax until Processing.js catches up
-    float temp = inc;
-    
+  void render(PGraphics pg) {    
     pg.fill(200, 100);
-    //pg.stroke(255);
     pg.pushMatrix();
     pg.translate(position.x, position.y);
-    //pg.rotate(theta);
-    /*pg.beginShape(TRIANGLES);
-    pg.vertex(0, -r*2);
-    pg.vertex(-r, r*2);
-    pg.vertex(r, r*2);
-    pg.endShape();
-    */
-    //pg.ellipseMode(CENTER);
     pg.ellipse(0, 0, size, size);
     pg.popMatrix();
   }
-  
-  /*
-       yvalues[i] = sin(temp)*amplitude;
-          temp+=dx;
-        }
-        pg.beginDraw();
-        pg.background(0);
-        pg.noStroke();
-        pg.fill(255);
-        // A simple way to draw the wave with an ellipse at each location
-        for (int i = 0; i < yvalues.length; i++) {
-          pg.ellipse(i*xspacing, pg.height/2+yvalues[i], 16, 16);
-        }
-  */
 
   // Wraparound
   void borders(PGraphics pg) {
@@ -532,8 +454,7 @@ class StickyBoid {
     if (position.y > pg.height+r) position.y = -r;
   }
 
-  // Separation
-  // Method checks for nearby boids and steers away
+  // Separation // Method checks for nearby boids and steers away
   PVector separate (ArrayList<StickyBoid> boids) {
     float desiredseparation = 25.0f;
     PVector steer = new PVector(0, 0, 0);
@@ -551,28 +472,22 @@ class StickyBoid {
         count++;            // Keep track of how many
       }
     }
-    // Average -- divide by how many
+
     if (count > 0) {
-      steer.div((float)count);
+      steer.div((float)count); // Average -- divide by how many
     }
 
     // As long as the vector is greater than 0
     if (steer.mag() > 0) {
-      // First two lines of code below could be condensed with new PVector setMag() method
-      // Not using this method until Processing.js catches up
-      // steer.setMag(maxspeed);
-
       // Implement Reynolds: Steering = Desired - Velocity
-      steer.normalize();
-      steer.mult(maxspeed);
+      steer.setMag(maxspeed);
       steer.sub(velocity);
       steer.limit(maxforce);
     }
     return steer;
   }
 
-  // Alignment
-  // For every nearby boid in the system, calculate the average velocity
+  // Alignment   // For every nearby boid in the system, calculate the average velocity
   PVector align (ArrayList<StickyBoid> boids) {
     float neighbordist = 50;
     PVector sum = new PVector(0, 0);
@@ -586,13 +501,8 @@ class StickyBoid {
     }
     if (count > 0) {
       sum.div((float)count);
-      // First two lines of code below could be condensed with new PVector setMag() method
-      // Not using this method until Processing.js catches up
-      // sum.setMag(maxspeed);
-
       // Implement Reynolds: Steering = Desired - Velocity
-      sum.normalize();
-      sum.mult(maxspeed);
+      sum.setMag(maxspeed);
       PVector steer = PVector.sub(sum, velocity);
       steer.limit(maxforce);
       return steer;
@@ -602,8 +512,7 @@ class StickyBoid {
     }
   }
 
-  // Cohesion
-  // For the average position (i.e. center) of all nearby boids, calculate steering vector towards that position
+  // Cohesion // For the average position (i.e. center) of all nearby boids, calculate steering vector towards that position
   PVector cohesion (ArrayList<StickyBoid> boids) {
     float neighbordist = 50;
     PVector sum = new PVector(0, 0);   // Start with empty vector to accumulate all positions
@@ -622,5 +531,20 @@ class StickyBoid {
     else {
       return new PVector(0, 0);
     }
+  }
+  
+  PVector drag() {
+    float coefficent = 0.1;
+    // Magnitude is coefficient * speed squared
+    float speed = velocity.mag();
+    float dragMagnitude = coefficent * speed * speed;
+
+    // Direction is inverse of velocity
+    PVector drag = velocity.copy();
+    drag.mult(-1);
+
+    // Scale according to magnitude
+    drag.setMag(dragMagnitude);
+    return drag;
   }
 }

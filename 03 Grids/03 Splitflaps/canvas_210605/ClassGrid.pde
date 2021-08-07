@@ -1,5 +1,6 @@
 class Grid {
   PGraphics pg;
+  PGraphics[] layers;
   PGraphics brightnessGrid;
   Splitflap[] flaps;
   String sortedCharacters = "";
@@ -18,7 +19,7 @@ class Grid {
   PImage target = null;
   
   public Grid(float w, float h, String charset, String fontName, int _gridSize, float interval, float cooldown) {    
-    font = loadFont(fontName);
+    font = loadFont(fontsFolder + fontName);
     gridSize = _gridSize;
     if(gridSize == 0) gridSize = 1;
     tileSize[0] = w/gridSize;
@@ -196,4 +197,30 @@ class Grid {
     return tileSize;
   } 
 
+}
+
+
+
+// DENSITY CLASS
+class Density implements Comparable<Density> {
+  int density = 0;
+  char character = 0;
+  public Density(int d, char c) {
+    density = d;
+    character = c;
+  }
+  
+  @Override
+    int compareTo(Density other) {
+      return this.density - other.density;
+    }
+    
+  void getValues() {
+    println(character + " => " + density);
+  }
+  
+  char getCharacter() {
+    return character; 
+  }    
+  
 }

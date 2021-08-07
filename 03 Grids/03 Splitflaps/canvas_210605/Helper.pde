@@ -1,4 +1,4 @@
-void keyPressed() {
+  void keyPressed() {
   if (key == CODED) {
     if(keyCode == LEFT) {
       if(animation != null) animation.prevState();
@@ -10,6 +10,7 @@ void keyPressed() {
       toggleExport = !toggleExport;
       println("toggleExport= " + toggleExport);
       if(toggleExport) exportCounter++;
+      exportSettingsFile();
     } else if (key == 'b' || key == 'B' ) {
       brightnessToggle = !brightnessToggle;
       println("brightnessToggle= " + brightnessToggle);
@@ -134,4 +135,26 @@ void showWindows(int aspectRatio) {
     if(aspectRatio == 2) image(grid.getDisplay(), 10, 10, 326, 580);
     image(animation.getDisplay(), 600, 10, 80, 80);
   }
+}
+
+void exportSettingsFile() {
+  String[] list = {
+   "EXPORT","--------------",
+   "Resolution=\t" + resolutions[selectResolution][0] +"x"+resolutions[selectResolution][1] + " ["+ selectResolution +"]",
+   "Grid size=\t" + gridSize,
+   "Char sets=\t" + charSets[selectSet],
+   "Font=\t\t" + fontNames[selectFont],
+   "Image=\t\t" + getFilename(imgFiles.get(imgIndex)),
+   "Video=\t\t" + getFilename(movFiles.get(movIndex))
+  };
+  saveStrings("_EXPORT/"+folderFormat+"-"+exportCounter+"/_settings.txt", list);
+}
+
+void loadSettings() {
+  String[] lines = loadStrings("settings/resolutions.ini");
+  println("there are " + lines.length + " lines");
+  for (int i = 0 ; i < lines.length; i++) {
+    println(lines[i]);
+  }
+
 }

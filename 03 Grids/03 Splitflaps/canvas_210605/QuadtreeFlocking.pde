@@ -15,7 +15,7 @@ class qtFlock{
   void display(PGraphics pg){
     for(qtBoid boid : boids){
       ArrayList<Point> query = qtree.query(new Circle(boid.position.x, boid.position.y, quadTreeBoidsPerceptionRadiuslider.getValue()), null);
-      //boid.stickyCheck();
+      boid.stickyCheck();
       boolean d = true;
       if(globalSticky && d) {
         temporaries[0] = 0.2; //seperation
@@ -333,7 +333,7 @@ class qtBoid {
       float avg = (colorMappedX + colorMappedY)/2;
       
       //fill(boidsFillColorPicker.getColorValue());
-      pg.fill(avg);
+      pg.fill(255);
       if(isSticky) pg.fill(255);
       //noFill();
       pg.noStroke();
@@ -497,12 +497,15 @@ void setupBarUI() {
 
   cp5.addTextlabel("MouseClickLabel")
     .setText("Mouse click:")
-    .setPosition(70, 7)
+    .setPosition(600, 125)
     .setColorValue(255)
+    .moveTo("quadtree")
     ;
+    
+  //cp5.getController("MouseClickLabel").moveTo("quadtree");
 
   mouseActionCheckBox = cp5.addRadioButton("mouseActionCheckBox")
-    .setPosition(130, 6)
+    .setPosition(602, 160)
     .setColorForeground(color(200))
     .setColorBackground(color(150))
     .setColorLabel(color(255))
@@ -514,11 +517,12 @@ void setupBarUI() {
     .addItem("+ boid", 2)
     .addItem("+ Prdtr", 3)
     .activate(0)
+    .moveTo("quadtree")
     ;
 
 
   slowChangeCheckBox = cp5.addCheckBox("slowChangeCheckBox")
-    .setPosition(width-250, 6)
+    .setPosition(602, 140)
     .setColorForeground(color(200))
     .setColorBackground(color(150))
     .setColorLabel(color(255))
@@ -527,10 +531,11 @@ void setupBarUI() {
     .setSpacingColumn(5)
     .setSpacingRow(20)
     .addItem("Slow change", 0)
+    .moveTo("quadtree")
     ;
 
   desiredBoidsTextField = cp5.addTextfield("desiredBoids")
-    .setPosition(width - 90, 2)
+    .setPosition(700, 140)
     .setSize(40, 16)
     .setStringValue("100")
     .setValue("100")
@@ -539,6 +544,7 @@ void setupBarUI() {
     .setColorForeground(color(250)) 
     .setColorBackground(color(50))
     .setAutoClear(false)
+    .moveTo("quadtree")
     ;
 
   desiredBoidsTextField.getCaptionLabel().align(ControlP5.LEFT, ControlP5.TOP_OUTSIDE);
@@ -548,8 +554,9 @@ void setupSettingsMenu() {
   settingsMenuButton =   cp5.addButton("SettingsButton")
     .setCaptionLabel("Settings")
     .setValue(0)
-    .setPosition(5, 2)
+    .setPosition(600, 105)
     .setSize(60, 16)
+    .moveTo("quadtree")
     ;
 
   Group basicGroup = cp5.addGroup("basicGroup")
@@ -589,7 +596,7 @@ void setupSettingsMenu() {
   boidsSizeSlider = cp5.addSlider("boidsSizeSlider")
     .setLabel("Scale")
     .setPosition(4, basicGroupY)
-    .setWidth(144)
+    .setWidth(184)
     .setRange(0, 1)
     .setValue(0.5)
     .moveTo(basicGroup)
@@ -617,7 +624,7 @@ void setupSettingsMenu() {
   boidsStrokeWeightSlider = cp5.addSlider("boidsStrokeWeightSlider")
     .setLabel("Stroke Weight")
     .setPosition(4, basicGroupY)
-    .setWidth(144)
+    .setWidth(184)
     .setRange(0, 5)
     .setValue(1)
     .moveTo(basicGroup)
@@ -650,7 +657,7 @@ void setupSettingsMenu() {
     .setLabel("Flocking behavior")
     .setBackgroundColor(color(0, 210))
     .setHeight(15)
-    ;
+  ;
   flockingGroup.setBackgroundHeight (330);
 
   float y = 4;
@@ -664,7 +671,7 @@ void setupSettingsMenu() {
   y +=15;
   maxSpeedSlider = cp5.addSlider("MaxSpeed")
     .setPosition(4, y)
-    .setWidth(144)
+    .setWidth(184)
     .setRange(0, 20)
     .moveTo(flockingGroup)
     ;
@@ -683,7 +690,7 @@ void setupSettingsMenu() {
   y += 15;
   seekMouseForceSlider = cp5.addSlider("seekMouseForceSlider")
     .setPosition(4, y)
-    .setWidth(144)
+    .setWidth(184)
     .setRange(0, 1)
     .setValue(0.1)
     .moveTo(flockingGroup)
@@ -717,7 +724,7 @@ void setupSettingsMenu() {
   y += 15;
   separationScaleSlider = cp5.addSlider("SeparationScale")
     .setPosition(4, y)
-    .setWidth(144)
+    .setWidth(184)
     .setRange(0, 10)
     .moveTo(flockingGroup)
     ;
@@ -728,7 +735,7 @@ void setupSettingsMenu() {
   y +=20;
   separationRadiusSlider = cp5.addSlider("SeparationRadius")
     .setPosition(4, y)
-    .setWidth(144)
+    .setWidth(184)
     .setRange(0, 100)
     .moveTo(flockingGroup)
     ;
@@ -739,7 +746,7 @@ void setupSettingsMenu() {
   y +=20;
   separationMaxForceSlider = cp5.addSlider("SeparationMaxSteerForce")
     .setPosition(4, y)
-    .setWidth(144)
+    .setWidth(184)
     .setRange(0, 1)
     .moveTo(flockingGroup)
     ;
@@ -759,7 +766,7 @@ void setupSettingsMenu() {
   y += 15;
   cohesionScaleSlider = cp5.addSlider("CohesionScale")
     .setPosition(4, y)
-    .setWidth(144)
+    .setWidth(184)
     .setRange(0, 10)
     .moveTo(flockingGroup)
     ;
@@ -770,7 +777,7 @@ void setupSettingsMenu() {
   y += 20;
   cohesionRadiusSlider = cp5.addSlider("CohesionRadius")
     .setPosition(4, y)
-    .setWidth(144)
+    .setWidth(184)
     .setRange(0, 100)
     .moveTo(flockingGroup)
     ;
@@ -781,7 +788,7 @@ void setupSettingsMenu() {
   y +=20;
   cohesionMaxForceSlider = cp5.addSlider("cohesionMaxSteerForce")
     .setPosition(4, y)
-    .setWidth(144)
+    .setWidth(184)
     .setRange(0, 1)
     .moveTo(flockingGroup)
     ;
@@ -801,7 +808,7 @@ void setupSettingsMenu() {
   y += 15;
   alignmentScaleSlider = cp5.addSlider("AlignmentScale")
     .setPosition(4, y)
-    .setWidth(144)
+    .setWidth(184)
     .setRange(0, 10)
     .moveTo(flockingGroup)
     ;
@@ -812,7 +819,7 @@ void setupSettingsMenu() {
   y += 20;
   alignmentRadiusSlider = cp5.addSlider("AlignmentRadius")
     .setPosition(4, y)
-    .setWidth(144)
+    .setWidth(184)
     .setRange(0, 100)
     .moveTo(flockingGroup)
     ;
@@ -823,7 +830,7 @@ void setupSettingsMenu() {
   y +=20;
   alignmentMaxForceSlider = cp5.addSlider("alignmentMaxSteerForce")
     .setPosition(4, y)
-    .setWidth(144)
+    .setWidth(184)
     .setRange(0, 1)
     .moveTo(flockingGroup)
     ;
@@ -882,7 +889,7 @@ void setupSettingsMenu() {
   mouseForceSlider = cp5.addSlider("mouseBehaviorMaxForceSlider")
     .setPosition(4, mouseGroupY)
     .setLabel("Force")
-    .setWidth(144)
+    .setWidth(184)
     .setRange(0, 10)
     .moveTo(mouseGroup)
     ;
@@ -916,7 +923,7 @@ void setupSettingsMenu() {
   mouseRadiusSlider = cp5.addSlider("mouseRadiusSlider")
     .setPosition(4, mouseGroupY)
     .setLabel("Radius")
-    .setWidth(144)
+    .setWidth(184)
     .setRange(0, width/2)
     .setValue(100)
     .moveTo(mouseGroup)
@@ -988,7 +995,7 @@ void setupSettingsMenu() {
   quadTreeBoidPerSquareLimitSlider = cp5.addSlider("quadTreeBoidPerSquareLimitSlider")
     .setPosition(4, quadTreeGroupY)
     .setLabel("Boid limit/square")
-    .setWidth(144)
+    .setWidth(184)
     .setRange(1, 20)
     .setValue(6)
     .setNumberOfTickMarks(20)
@@ -1001,7 +1008,7 @@ void setupSettingsMenu() {
   quadTreeBoidsPerceptionRadiuslider = cp5.addSlider("quadTreeBoidsPerceptionRadiuslider")
     .setPosition(4, quadTreeGroupY)
     .setLabel("Boid perception radius")
-    .setWidth(144)
+    .setWidth(184)
     .setRange(1, 200)
     .setValue(30)
     .moveTo(quadTreeGroup)
@@ -1019,8 +1026,8 @@ void setupSettingsMenu() {
 
   /////
   settingsMenu = cp5.addAccordion("Settings")
-    .setPosition(5, 22)
-    .setWidth(150)
+    .setPosition(600, 180)
+    .setWidth(190 )
     .addItem(basicGroup)
     .addItem(flockingGroup)
     .addItem(mouseGroup)
@@ -1029,12 +1036,13 @@ void setupSettingsMenu() {
 
   //boidsMenu.open(0, 1);
   settingsMenu.setCollapseMode(Accordion.MULTI);
-  settingsMenu.setVisible(showSettings);
+  settingsMenu.setVisible(true);
+  settingsMenu.moveTo("quadtree");
 }
 
 void setupBackgroundColorPicker() {
   backgroundColorPicker = cp5.addColorPicker("backgroundColorPicker")
-    .setPosition(width - 500, 25)
+    .setPosition(680, 105)
     .setColorValue(color(50))
     ;
 
@@ -1042,9 +1050,10 @@ void setupBackgroundColorPicker() {
 
   backgroundColorButton = cp5.addButton("BG Color")
     .setValue(0)
-    .setPosition(width - 500, 2)
+    .setPosition(660, 105)
     .setColorBackground(backgroundColorPicker.getColorValue())
     .setSize(60, 16)
+    .moveTo("quadtree")
     ;
 }
 
