@@ -152,9 +152,16 @@ void exportSettingsFile() {
 
 void loadSettings() {
   String[] lines = loadStrings("settings/resolutions.ini");
-  println("there are " + lines.length + " lines");
+  println("Loaded resolutions.ini with " + lines.length + " different resolutions!");
+  resolutions = new int[lines.length][2];
   for (int i = 0 ; i < lines.length; i++) {
-    println(lines[i]);
+    String[] split = split(lines[i], ",");
+    resolutions[i][0] = int(split[0]);
+    resolutions[i][1] = int(split[1]);
   }
-
+  
+  charSets = loadStrings("settings/characters.ini");
+  println("Loaded characters.ini with " + charSets.length + " different character sets!");
+  fontNames = loadStrings("settings/fonts.ini");
+  println("Loaded fonts.ini with " + fontNames.length + " different font!");  
 }

@@ -32,7 +32,7 @@
 // [ ] stickyFlock quadtree import
 // [ ] change resolution via controls
 // [ ] layer system
-// [ ] settings
+// [x] settings
 // [ ] remove stickyflock menu
 // [ ] flow field
 // [ ] turn off the "brightness mapping" / pixel density
@@ -57,18 +57,9 @@ PGraphics output;
 int selectSet = 0;
 int selectFont = 0;
 
-/*
-int[][] resolutions = {
-  {600, 600},
-  {1920, 1080},
-  {1080, 1920},
-  {3840, 2160},
-  {7680, 4320},
-  {1080, 1080},
-  {1200, 1200}
-};
-*/
 int[][] resolutions;
+String[] charSets;
+String[] fontNames;
 int selectResolution = 6;
 int gridSize = 60; // 20x20
 
@@ -114,6 +105,7 @@ void setup() {
   surface.setLocation(0, 0);
   surface.setTitle("ASCII Tool / 0.0.7");
   
+  loadSettings();
   uiFont = loadFont(fontsFolder + "/SFMono-Regular-8.vlw");
   Ani.init(this);
   initCP5();
@@ -126,7 +118,7 @@ void setup() {
   
   animation = new Animation(this, resolutions[selectResolution][0], resolutions[selectResolution][1]);
   
-  loadSettings();
+  
 }
 
 void draw() {
