@@ -31,11 +31,13 @@
 // [ ] geomerative import
 // [ ] stickyFlock quadtree import
 // [ ] change resolution via controls
-// [ ] layer system
+// [ ] layer system (turn on/off flapping for example on same animation)
 // [x] settings
 // [ ] remove stickyflock menu
 // [ ] flow field
 // [ ] turn off the "brightness mapping" / pixel density
+// [ ] something like a bright "cursor" symbol that appears before new chars (see andreas gysin works)
+// [/] autocycle for galleries
 
 
 // source: https://en.wikipedia.org/wiki/List_of_Unicode_characters
@@ -60,7 +62,7 @@ int selectFont = 0;
 int[][] resolutions;
 String[] charSets;
 String[] fontNames;
-int selectResolution = 6;
+int selectResolution = 0;
 int gridSize = 60; // 20x20
 
 float splitflapInterval = 2;
@@ -78,6 +80,8 @@ boolean toggleStroke = true;
 boolean toggleFill = false;
 boolean toggleBackground = true;
 boolean toggleBrightnessFlip = false;
+boolean toggleAutocycle = true;
+boolean toggleFullscreen = true;
 
 boolean firstClick = false;
 boolean frameReady = false;
@@ -98,8 +102,14 @@ int movIndex = 0;
 int exportCounter = -1;
 String fontsFolder = "fonts/";
 
+long timestamp;
+long autoInterval = 10000;
+
 void setup() {
   size(800, 600);
+  
+ 
+  
   frameRate(60);
   noSmooth();
   surface.setLocation(0, 0);
@@ -118,11 +128,19 @@ void setup() {
   
   animation = new Animation(this, resolutions[selectResolution][0], resolutions[selectResolution][1]);
   
-  
+  if(toggleFullscreen) surface.setSize(resolutions[selectResolution][0], resolutions[selectResolution][1]);
 }
 
 void draw() {
-  updateGUI();
+  if(toggleAutocycle && millis() - timestamp > autoInterval) {
+    timestamp = millis();
+    //if(random(100) > 50) randomGridSize();
+    if(random(100) > 50) randomCharSet();
+    //if(random(1000) > 700) toggleBackground(true);
+    //else toggleBackground(false);
+    animation.randomState();
+  }
+  
   if(togglePlay) animation.update();
   if(animation.ready()) {
     if(toggleFeed) grid.feed(animation.getDisplay());
@@ -132,6 +150,17 @@ void draw() {
     if(brightnessToggle) image(grid.getBrightnessGrid(), 700, 10, 80, 80);
     exportFrames(toggleExport);
   }
+  
+/*
+
+if(toggleFullscreen) {
+      cp5.hide();
+    } else {
+      cp5.draw();
+    }
+*/
+
   animation.resetReadiness();
   frameReady = false;
+  updateGUI();
 }

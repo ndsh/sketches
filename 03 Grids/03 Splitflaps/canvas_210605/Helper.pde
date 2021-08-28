@@ -124,16 +124,21 @@ int detectResolution(int w, int h) {
 
 
 void showWindows(int aspectRatio) {
-  if(toggleDebugView) {
-    if(aspectRatio == 0) image(animation.getDisplay(), 10, 10, 580, 580);
-    else if(aspectRatio == 1) image(animation.getDisplay(), 10, 10, 580, 326);
-    if(aspectRatio == 2) image(animation.getDisplay(), 10, 10, 326, 580);
-    image(grid.getDisplay(), 600, 10, 80, 80);
+  if(!toggleFullscreen) {
+    if(toggleDebugView) {
+      if(aspectRatio == 0) image(animation.getDisplay(), 10, 10, 580, 580);
+      else if(aspectRatio == 1) image(animation.getDisplay(), 10, 10, 580, 326);
+      if(aspectRatio == 2) image(animation.getDisplay(), 10, 10, 326, 580);
+      image(grid.getDisplay(), 600, 10, 80, 80);
+    } else {
+      if(aspectRatio == 0) image(grid.getDisplay(), 10, 10, 580, 580);
+      else if(aspectRatio == 1) image(grid.getDisplay(), 10, 10, 580, 326);
+      if(aspectRatio == 2) image(grid.getDisplay(), 10, 10, 326, 580);
+      image(animation.getDisplay(), 600, 10, 80, 80);
+    }
   } else {
-    if(aspectRatio == 0) image(grid.getDisplay(), 10, 10, 580, 580);
-    else if(aspectRatio == 1) image(grid.getDisplay(), 10, 10, 580, 326);
-    if(aspectRatio == 2) image(grid.getDisplay(), 10, 10, 326, 580);
-    image(animation.getDisplay(), 600, 10, 80, 80);
+    cp5.hide();
+    image(grid.getDisplay(), 0, 0, width, height);
   }
 }
 

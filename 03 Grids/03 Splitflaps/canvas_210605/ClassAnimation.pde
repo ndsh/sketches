@@ -40,14 +40,22 @@ class Animation {
   final int FLOCKOVERLAY = 18;
   final int QTFLOCK = 19;
   final int GRADIENTS = 20;
-  int state = CIRCLE;
+  final int DRAW = 21;
+  int state = ARCS;
   
   String[] stateNames = {
     "CIRCLE", "ELLIPSE", "SQUARE", "RECTANGLE", "MOVIE",
     "IMAGE","SINE", "THREE LINES", "CELLULAR AUTOMATA",
     "ROTATING BALL", "ARCS", "ARCS PERLIN", "DIAGONAL BALLS", "SWING",
     "PARALLAX", "FLOCK", "CHARMORPH", "STICKYFLOCK", "FLOCKOVERLAY",
-    "QUADTREEFLOCKING", "GRADIENTS"
+    "QUADTREEFLOCKING", "GRADIENTS", "DRAW"
+  };
+  
+  String[] autoStateSelection = {
+    "CIRCLE", "ELLIPSE", "SQUARE", "RECTANGLE", 
+    "SINE", "THREE LINES", "CELLULAR AUTOMATA",
+    "ROTATING BALL", "ARCS", "SWING",
+    "FLOCK", "GRADIENTS"
   };
   
   boolean movieStopped = false;
@@ -69,6 +77,7 @@ class Animation {
   int xspacing = 16;   // How far apart should each horizontal location be spaced
   int sine_width;              // Width of entire wave
   float theta = 0.0;  // Start angle at 0
+  float thetaValue = random(0.02, 0.06);
   float amplitude = 200.0;  // Height of wave
   float period = 500.0;  // How many pixels before the wave repeats
   float dx;  // Value for incrementing X, a function of period and xspacing
@@ -249,8 +258,10 @@ class Animation {
       
       case SINE:
         if(!movieStopped) stopMovie();
-        theta += 0.02;
-        amplitude = 300;
+        
+        //theta += 0.02;
+        theta += thetaValue;
+        
         if(xspacing != yvalues.length) yvalues = new float[w/xspacing];
         temp = theta;
         for (int i = 0; i < yvalues.length; i++) {
@@ -269,7 +280,8 @@ class Animation {
       
       case THREE_LINES:
         if(!movieStopped) stopMovie();
-        theta += 0.005;
+        //theta += 0.005;
+        theta += thetaValue;
         pg.beginDraw();
         //pg.stroke(255);
         applyToggleStyles();
@@ -304,8 +316,9 @@ class Animation {
       
       case ROTATING_BALL:
         if(!movieStopped) stopMovie();
-        amplitude = 300.0;
-        theta += 0.05;
+//        amplitude = 300.0;
+        //theta += 0.05;
+        theta += thetaValue;
         temp = theta;
         yvalues[0] = sin(temp)*amplitude;
         temp+=dx;
@@ -324,7 +337,7 @@ class Animation {
       
       case ARCS:
         if(!movieStopped) stopMovie();
-        theta += 0.02;
+        theta += thetaValue;
         pg.beginDraw();
         applyToggleStyles();
         pg.translate(pg.width/2, pg.height/2);
@@ -332,11 +345,11 @@ class Animation {
         pg.ellipseMode(CENTER);
         pg.push();
         pg.strokeWeight(16);
-        pg.arc(0, 0, 100, 100, 0, HALF_PI);
+        pg.arc(0, random(-20, 20), 100, 100, 0, HALF_PI);
         pg.rotate(radians(120));
-        pg.arc(0, 0, 300, 300, 0, HALF_PI);
+        pg.arc(0, random(-20, 20), 300, 300, 0, HALF_PI);
         pg.rotate(radians(120));
-        pg.arc(0, 0, 500, 500, 0, HALF_PI);
+        pg.arc(0, random(-10, 10), 500, 500, 0, HALF_PI);
         pg.pop();
         pg.endDraw();
         animationReady = true;
@@ -416,9 +429,9 @@ class Animation {
       
       case SWING:
         if(!movieStopped) stopMovie();
-        theta += 0.02; // Increment theta (try different values for 'angular velocity' here
-        amplitude = w/3;
-        xspacing = 16;
+        //theta += 0.02; // Increment theta (try different values for 'angular velocity' here
+        //amplitude = w/3;
+        theta += thetaValue;
         if(xspacing != yvalues.length) yvalues = new float[h/xspacing];
         temp = theta;
         for (int i = 0; i < yvalues.length; i++) {
@@ -582,6 +595,18 @@ class Animation {
         animationReady = true;
       break;
       
+      case DRAW:
+        if(!movieStopped) stopMovie(); 
+        pg.beginDraw();
+        applyToggleStyles();
+        if(mousePressed) {
+          pg.ellipse(mouseX, mouseY, 20, 20);
+        }
+        pg.endDraw();
+        
+        animationReady = true;
+      break;
+      
     }
     
   }
@@ -601,6 +626,21 @@ class Animation {
   void prevState() {
     state--;
     if(state < 0) state = stateNames.length-1;
+  }
+  
+  void randomState() {
+    String s = autoStateSelection[(int)random(autoStateSelection.length-1)];
+    int found = 0;
+    for(int i = 0; i<stateNames.length; i++) {
+      if(stateNames[i].equals(s)) {
+        found = i;
+        break;
+      }
+    }
+    state = found;
+    amplitude = (int)random(200,300);
+    thetaValue = random(0.02, 0.06);
+    xspacing = (int)random(8,16);
   }
   
   String getStateName() {

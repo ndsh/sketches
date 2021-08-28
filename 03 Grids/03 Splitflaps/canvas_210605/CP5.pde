@@ -13,7 +13,7 @@ CheckBox playCheckbox;
 
 void initCP5() {
   cp5 = new ControlP5(this);
-
+  if(toggleFullscreen) cp5.setAutoDraw(false);
   
   cp5.addTab("quadtree")
   ;
