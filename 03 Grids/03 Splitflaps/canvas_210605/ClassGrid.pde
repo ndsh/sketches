@@ -23,7 +23,7 @@ class Grid {
     gridSize = _gridSize;
     if(gridSize == 0) gridSize = 1;
     tileSize[0] = w/gridSize;
-    tileSize[1] = h/gridSize;
+    tileSize[1] = w/gridSize;
     nuance = charset.length(); // the different nuances or densities we have. basically the amount of chars
     amount = gridSize*gridSize;
     //amount = tileSize[]|;
