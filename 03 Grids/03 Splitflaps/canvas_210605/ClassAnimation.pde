@@ -41,7 +41,7 @@ class Animation {
   final int QTFLOCK = 19;
   final int GRADIENTS = 20;
   final int DRAW = 21;
-  int state = ARCS;
+  int state = SINE;
   
   String[] stateNames = {
     "CIRCLE", "ELLIPSE", "SQUARE", "RECTANGLE", "MOVIE",
@@ -258,7 +258,8 @@ class Animation {
       
       case SINE:
         if(!movieStopped) stopMovie();
-        
+        //amplitude = 24;
+        //xspacing = 16;
         //theta += 0.02;
         theta += thetaValue;
         

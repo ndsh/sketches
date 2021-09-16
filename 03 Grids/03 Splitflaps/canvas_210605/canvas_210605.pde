@@ -32,12 +32,15 @@
 // [ ] stickyFlock quadtree import
 // [ ] change resolution via controls
 // [ ] layer system (turn on/off flapping for example on same animation)
+// [ ] turn of flapping based on "lightness"
 // [x] settings
-// [ ] remove stickyflock menu
+// [/] remove stickyflock menu
 // [ ] flow field
 // [ ] turn off the "brightness mapping" / pixel density
 // [ ] something like a bright "cursor" symbol that appears before new chars (see andreas gysin works)
-// [/] autocycle for galleries
+// [x] autocycle for galleries
+// [ ] flaps mit invertiertem hintergrund
+
 
 
 // source: https://en.wikipedia.org/wiki/List_of_Unicode_characters
@@ -62,7 +65,7 @@ int selectFont = 0;
 int[][] resolutions;
 String[] charSets;
 String[] fontNames;
-int selectResolution = 1;
+int selectResolution = 8;
 int gridSize = 60; // 20x20
 
 float splitflapInterval = 2;
@@ -80,8 +83,8 @@ boolean toggleStroke = true;
 boolean toggleFill = false;
 boolean toggleBackground = true;
 boolean toggleBrightnessFlip = false;
-boolean toggleAutocycle = true;
-boolean toggleFullscreen = true;
+boolean toggleAutocycle = false;
+boolean toggleFullscreen = false;
 
 boolean firstClick = false;
 boolean frameReady = false;
@@ -107,7 +110,7 @@ long autoInterval = 10000;
 
 void setup() {
   size(800, 600);
-  
+  //fullScreen();
  
   
   frameRate(60);
