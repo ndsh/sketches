@@ -1,3 +1,6 @@
+// inspo
+// https://www.instagram.com/p/CT67z7FI7Oq/?utm_source=ig_web_copy_link
+
 // have a grid of 600x600 pixel with custom tileSize
 // feed the grid an image (pimage or pgraphics)
 // feed the grid a character set
@@ -65,7 +68,7 @@ int selectFont = 0;
 int[][] resolutions;
 String[] charSets;
 String[] fontNames;
-int selectResolution = 8;
+int selectResolution = 0;
 int gridSize = 60; // 20x20
 
 float splitflapInterval = 2;
@@ -109,7 +112,7 @@ long timestamp;
 long autoInterval = 10000;
 
 void setup() {
-  size(800, 600);
+  size(800, 600, P2D);
   //fullScreen();
  
   

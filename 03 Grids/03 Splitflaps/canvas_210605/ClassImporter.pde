@@ -7,7 +7,7 @@ class Importer {
   StringList folders = new StringList();
   StringList files = new StringList();
   
-  String[] legalFiles = {"jpg", "JPG", "jpeg", "JPEG", "png", "PNG", "mp4"};
+  String[] legalFiles = {"jpg", "JPG", "jpeg", "JPEG", "png", "PNG", "mp4", "mov"};
   
   IntList maxima = new IntList();
 
