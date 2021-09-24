@@ -41,15 +41,16 @@ class Animation {
   final int QTFLOCK = 19;
   final int GRADIENTS = 20;
   final int DRAW = 21;
-  final int THREED = 22;
-  int state = THREED;
+  final int THREEDCUBE = 22;
+  final int THREEDSPACE = 23;
+  int state = THREEDSPACE;
   
   String[] stateNames = {
     "CIRCLE", "ELLIPSE", "SQUARE", "RECTANGLE", "MOVIE",
     "IMAGE","SINE", "THREE LINES", "CELLULAR AUTOMATA",
     "ROTATING BALL", "ARCS", "ARCS PERLIN", "DIAGONAL BALLS", "SWING",
     "PARALLAX", "FLOCK", "CHARMORPH", "STICKYFLOCK", "FLOCKOVERLAY",
-    "QUADTREEFLOCKING", "GRADIENTS", "DRAW", "THREED"
+    "QUADTREEFLOCKING", "GRADIENTS", "DRAW", "THREED", "THREEDSPACE"
   };
   
   String[] autoStateSelection = {
@@ -104,11 +105,19 @@ class Animation {
   
   // 3DPROJECTION
   PVector[] points = new PVector[8];
+  PVector[] pointsSpace;
 
   float[][] projection = {
     {1, 0, 0},
     {0, 1, 0}
   };
+  
+  float[][] rotationX;
+  float[][] rotationY;
+  float[][] rotationZ;
+  PVector[] projected;
+  int index = 0;
+  PVector[] connect = new PVector[3];
   
   boolean animationReady = false;
   
@@ -167,6 +176,15 @@ class Animation {
     points[5] = new PVector(0.5, -0.5, 0.5);
     points[6] = new PVector(0.5, 0.5, 0.5);
     points[7] = new PVector(-0.5, 0.5, 0.5);
+    
+    pointsSpace = new PVector[int(random(8, 32))];
+    for(int i = 0; i<pointsSpace.length; i++) {
+      pointsSpace[i] = new PVector(random(-1, 1),random(-1, 1),random(-1, 1)); 
+    }
+    
+    connect[0] = new PVector(int(random(pointsSpace.length)), int(random(pointsSpace.length)));
+    connect[1] = new PVector(int(random(pointsSpace.length)), int(random(pointsSpace.length)));
+    connect[2] = new PVector(int(random(pointsSpace.length)), int(random(pointsSpace.length)));
     
     
     // START AT LEAST ONE FRAME OF THE MOVIE
@@ -627,7 +645,7 @@ class Animation {
         animationReady = true;
       break;
       
-      case THREED:
+      case THREEDCUBE:
         
         float[][] rotationX = {
           { 1, 0, 0},
@@ -647,7 +665,7 @@ class Animation {
           { 0, 0, 1}
         };
         
-        PVector[] projected = new PVector[8];
+        projected = new PVector[8];
         
         int index = 0;
         for (PVector v : points) {
@@ -655,7 +673,7 @@ class Animation {
           rotated = matmul(rotationX, rotated);
           rotated = matmul(rotationZ, rotated);
           PVector projected2d = matmul(projection, rotated);
-          projected2d.mult(200);
+          projected2d.mult(300);
           projected[index] = projected2d;
           //point(projected2d.x, projected2d.y);
           index++;
@@ -675,15 +693,83 @@ class Animation {
           pg.point(v.x, v.y);
         }
         
-        connect(0, 1, projected);
-        connect(1, 2, projected);
-        connect(2, 3, projected);
-        connect(3, 0, projected);
+          // Connecting
+        for (int i = 0; i < 4; i++) {
+          connect(i, (i+1) % 4, projected);
+          connect(i+4, ((i+1) % 4)+4, projected);
+          connect(i, i+4, projected);
+        }
         
         pg.endDraw();
         
         animationReady = true;
-        theta += 0.02;
+        theta += 0.01;
+        
+      break;
+      
+      case THREEDSPACE:
+        
+        float[][] rotationX1 = {
+          { 1, 0, 0},
+          { 0, cos(theta), -sin(theta)},
+          { 0, sin(theta), cos(theta)}
+        };
+        
+        float[][] rotationY1 = {
+          { cos(theta), 0, sin(theta)},
+          { 0, 1, 0},
+          { -sin(theta), 0, cos(theta)}
+        };
+        
+        float[][] rotationZ1 = {
+          { cos(theta), -sin(theta), 0},
+          { sin(theta), cos(theta), 0},
+          { 0, 0, 1}
+        };
+        
+        projected = new PVector[pointsSpace.length];
+        
+        index = 0;
+        for (PVector v : pointsSpace) {
+          PVector rotated = matmul(rotationY1, v);
+          //rotated = matmul(rotationX1, rotated);
+          //rotated = matmul(rotationZ1, rotated);
+          PVector projected2d = matmul(projection, rotated);
+          projected2d.mult(300);
+          projected[index] = projected2d;
+          //point(projected2d.x, projected2d.y);
+          index++;
+        }
+        
+
+      
+        if(!movieStopped) stopMovie(); 
+        pg.beginDraw();
+        pg.translate(pg.width/2, pg.height/2);
+        applyToggleStyles();
+        
+        for(PVector v : projected) {
+          pg.stroke(255);
+          pg.strokeWeight(16);
+          pg.noFill();
+          //pg.point(v.x, v.y);
+        }
+        
+          // Connecting
+        for (int i = 0; i < 4; i++) {
+          //connect(i, (i+1) % 4, projected);
+          //connect(i+4, ((i+1) % 4)+4, projected);
+          //connect(i, i+4, projected);
+        }
+        
+        for(int i = 0; i<connect.length; i++) {
+        connect((int)connect[i].x, (int)connect[i].y, projected);
+        }
+        
+        pg.endDraw();
+        
+        animationReady = true;
+        theta += 0.01;
         
       break;
       
@@ -701,7 +787,7 @@ class Animation {
   void connect(int i, int j, PVector[] points) {
     PVector a = points[i];
     PVector b = points[j];
-    pg.strokeWeight(1);
+    pg.strokeWeight(16);
     pg.stroke(255);
     pg.line(a.x, a.y, b.x, b.y);
   }
