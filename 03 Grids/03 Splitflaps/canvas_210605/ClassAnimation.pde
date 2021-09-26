@@ -42,15 +42,18 @@ class Animation {
   final int GRADIENTS = 20;
   final int DRAW = 21;
   final int THREEDCUBE = 22;
-  final int THREEDSPACE = 23;
-  int state = THREEDSPACE;
+  final int THREEDLINES = 23;
+  final int THREEDDISK = 24;
+  final int THREEDSCULPTURE = 25;
+  int state = THREEDSCULPTURE;
   
   String[] stateNames = {
     "CIRCLE", "ELLIPSE", "SQUARE", "RECTANGLE", "MOVIE",
     "IMAGE","SINE", "THREE LINES", "CELLULAR AUTOMATA",
     "ROTATING BALL", "ARCS", "ARCS PERLIN", "DIAGONAL BALLS", "SWING",
     "PARALLAX", "FLOCK", "CHARMORPH", "STICKYFLOCK", "FLOCKOVERLAY",
-    "QUADTREEFLOCKING", "GRADIENTS", "DRAW", "THREED", "THREEDSPACE"
+    "QUADTREEFLOCKING", "GRADIENTS", "DRAW", 
+    "THREED", "THREEDLINES", "THREEDDISK", "THREEDSCULPTURE"
   };
   
   String[] autoStateSelection = {
@@ -106,6 +109,8 @@ class Animation {
   // 3DPROJECTION
   PVector[] points = new PVector[8];
   PVector[] pointsSpace;
+  PVector[] pointsDisk  = new PVector[8];
+  PVector[] pointsSculpt1 =  new PVector[16];
 
   float[][] projection = {
     {1, 0, 0},
@@ -180,6 +185,20 @@ class Animation {
     pointsSpace = new PVector[int(random(8, 32))];
     for(int i = 0; i<pointsSpace.length; i++) {
       pointsSpace[i] = new PVector(random(-1, 1),random(-1, 1),random(-1, 1)); 
+    }
+    
+    pointsDisk[0] = new PVector(0.0, -0.5, 0);
+    pointsDisk[1] = new PVector(0.352, -0.354, 0);
+    pointsDisk[2] = new PVector(0.5, 0.0, 0);
+    pointsDisk[3] = new PVector(0.352, 0.352, 0);
+    pointsDisk[4] = new PVector(-0.0, 0.5, 0);
+    pointsDisk[5] = new PVector(-0.354, 0.352, 0);
+    pointsDisk[6] = new PVector(-0.5, 0.0, 0);
+    pointsDisk[7] = new PVector(-0.354, -0.354, 0);
+    
+    for(int i = 0; i<pointsSculpt1.length; i++) {
+      float map = map(i, 0, pointsSculpt1.length, -0.5, 0.5);
+      pointsSculpt1[i] = new PVector(map, map, map);
     }
     
     connect[0] = new PVector(int(random(pointsSpace.length)), int(random(pointsSpace.length)));
@@ -707,7 +726,7 @@ class Animation {
         
       break;
       
-      case THREEDSPACE:
+      case THREEDLINES:
         
         float[][] rotationX1 = {
           { 1, 0, 0},
@@ -773,6 +792,139 @@ class Animation {
         
       break;
       
+      case THREEDDISK:
+        
+        float[][] rotationX2 = {
+          { 1, 0, 0},
+          { 0, cos(theta), -sin(theta)},
+          { 0, sin(theta), cos(theta)}
+        };
+        
+        float[][] rotationY2 = {
+          { cos(theta), 0, sin(theta)},
+          { 0, 1, 0},
+          { -sin(theta), 0, cos(theta)}
+        };
+        
+        float[][] rotationZ2 = {
+          { cos(theta), -sin(theta), 0},
+          { sin(theta), cos(theta), 0},
+          { 0, 0, 1}
+        };
+        
+        projected = new PVector[pointsDisk.length];
+        
+        index = 0;
+        for (PVector v : pointsDisk) {
+          PVector rotated = matmul(rotationX2, v);
+          rotated = matmul(rotationY2, rotated);
+          rotated = matmul(rotationZ2, rotated);
+          PVector projected2d = matmul(projection, rotated);
+          projected2d.mult(400);
+          projected[index] = projected2d;
+          //point(projected2d.x, projected2d.y);
+          index++;
+        }
+        
+        
+        
+
+      
+        if(!movieStopped) stopMovie(); 
+        pg.beginDraw();
+        pg.translate(pg.width/2, pg.height/2);
+        applyToggleStyles();
+        
+        for(PVector v : projected) {
+          pg.stroke(255);
+          pg.strokeWeight(16);
+          pg.noFill();
+          //pg.point(v.x, v.y);
+        }
+        
+        for (int i = 0; i < 7; i++) {
+          connect(i, (i+1), projected, 8);
+          //connect(i+4, ((i+1) % 4)+4, projected, 8);
+          //connect(i, i+4, projected, 8);
+        }
+        connect(7, 0, projected, 8);
+        
+        //connectBezier(0, 1, 2, 3, projected);
+        //connectBezier(2, 3, 4, 5, projected);
+        //connectBezier(4, 5, 6,7, projected);
+        //connectBezier(1, 3, 2, projected);
+        //connectBezier(2, 0, 3, projected);
+        //connectBezier(3, 1, 0, projected);
+        
+        
+        pg.endDraw();
+        
+        animationReady = true;
+        
+        
+        theta += 0.01;
+        
+      break;
+      
+      case THREEDSCULPTURE:
+        
+        float[][] rotationX3 = {
+          { 1, 0, 0},
+          { 0, cos(theta), -sin(theta)},
+          { 0, sin(theta), cos(theta)}
+        };
+        
+        float[][] rotationY3 = {
+          { cos(theta), 0, sin(theta)},
+          { 0, 1, 0},
+          { -sin(theta), 0, cos(theta)}
+        };
+        
+        float[][] rotationZ3 = {
+          { cos(theta), -sin(theta), 0},
+          { sin(theta), cos(theta), 0},
+          { 0, 0, 1}
+        };
+        
+        projected = new PVector[pointsSculpt1.length];
+        
+        index = 0;
+        for (PVector v : pointsSculpt1) {
+          PVector rotated = matmul(rotationY3, v);
+          rotated = matmul(rotationX3, rotated);
+          //rotated = matmul(rotationZ3, rotated);
+          PVector projected2d = matmul(projection, rotated);
+          projected2d.mult(500);
+          projected[index] = projected2d;
+          //point(projected2d.x, projected2d.y);
+          index++;
+        }
+        
+        
+        if(!movieStopped) stopMovie(); 
+        pg.beginDraw();
+        pg.translate(pg.width/2, pg.height/2);
+        applyToggleStyles();
+        
+        for(PVector v : projected) {
+          pg.stroke(255);
+          pg.strokeWeight(32);
+          pg.noFill();
+          pg.point(v.x, v.y);
+        }
+        
+
+        
+        
+        pg.endDraw();
+        
+        animationReady = true;
+        
+        
+        theta += 0.01;
+        
+      break;
+      
     }
     
   }
@@ -791,6 +943,29 @@ class Animation {
     pg.stroke(255);
     pg.line(a.x, a.y, b.x, b.y);
   }
+  
+  void connect(int i, int j, PVector[] points, int strokeWeight) {
+    PVector a = points[i];
+    PVector b = points[j];
+    pg.strokeWeight(strokeWeight);
+    pg.stroke(255);
+    pg.line(a.x, a.y, b.x, b.y);
+  }
+  
+  void connectBezier(int i, int j, int k, int l, PVector[] points) {
+    PVector a = points[i];
+    PVector b = points[j];
+    PVector c = points[k];
+    PVector d = points[l];
+    pg.strokeWeight(60);
+    pg.stroke(255);
+    float f = 1;
+    //pg.curve(a.x, a.y, (c.x-a.x)/f, (c.y-a.y)/f, (c.x-b.x)/f, (c.y-b.y)/f, b.x, b.y);
+    pg.bezier(a.x, a.y, b.x, b.y, c.x, c.y, d.x, d.y);
+  }
+  
+  
+  
   
   void nextState() {
     state++;

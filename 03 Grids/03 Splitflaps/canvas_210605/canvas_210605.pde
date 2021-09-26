@@ -69,7 +69,7 @@ int[][] resolutions;
 String[] charSets;
 String[] fontNames;
 int selectResolution = 0;
-int gridSize = 60; // 20x20
+int gridSize = 100; // 20x20
 
 float splitflapInterval = 2;
 float splitflapCooldown = 1;
