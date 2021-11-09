@@ -47,6 +47,8 @@ class Dot {
   }
 
   void display() {
+    if(brightness > 0) println("col");
+    
     push();
     if(displayFill) noStroke();
     else noFill();

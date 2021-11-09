@@ -35,7 +35,6 @@ void setup() {
   pgTemp.beginDraw();
   pgTemp.endDraw();
 
-
   d = new Dither();
   d.setCanvas(1560, 408);
   d.setMode(0);

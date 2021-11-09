@@ -40,6 +40,7 @@ boolean ditherThis = true;
 boolean export = false;
 boolean bigText = false;
 boolean pixelate = true;
+boolean moviePlaying = false;
 
 int[] targetStart = {28, 1};
 int[] targetEnd = {8, 14};
@@ -213,13 +214,13 @@ class Flake {
     }
   }
 
-  void show() { // function to render the drop onto the screen
+  void show(PGraphics pg) { // function to render the drop onto the screen
     float alpha = map(z, 0, 20, 0, 255); //if z is near , drop is more thicker
     float thick = map(z, 0, 20, 1, 10); //if z is near , drop is more thicker
     //pg5.strokeWeight(thick); // weight of the drop
     //pg5.stroke(255, alpha); // purple color
-    pgTemp.fill(255, alpha);
-    pgTemp.ellipse(x, y, 5, 5); // draws the line with two points 
+    pg.fill(255, alpha);
+    pg.ellipse(x, y, 5, 5); // draws the line with two points 
   }
 }
 
@@ -235,6 +236,7 @@ void drawSun(float xloc, float yloc, int size, int num) {
 
 void movieEvent(Movie m) {
   m.read();
+  
   //if(state == VIDEO) source = myMovie;
 }
 
@@ -249,6 +251,7 @@ void loadMovie(int index) {
   myMovie.loop();
   myMovie.play();
   myMovie.volume(0);
+  moviePlaying = true;
   //myMovie.speed(movieSpeed);
   
 }
@@ -305,7 +308,6 @@ color averageColor(PImage source, float x, float y, float w, float h) {
 }
 
 void feed() {
-  
   color c = 0;
   float b = 0;
   for(int i = 0; i<dots.size(); i++) {
@@ -313,6 +315,7 @@ void feed() {
     int y = (int)i/tilesX;
     c = averageColor(source, x*tileW, y*tileH, tileW, tileH);
     b = brightness(c);
+    
     dots.get(i).setBrightness(b);
     
   }

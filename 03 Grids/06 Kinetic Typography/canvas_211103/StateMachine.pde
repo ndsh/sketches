@@ -9,7 +9,7 @@ final int SNOW = 7;
 final int IMG = 8;
 final int VIDEO = 9;
 
-int state = TARGETBOX;
+int state = SNOW;
 String[] namedStates = {"TARGETBOX", "WAVE", "PAINT", "DITHERTYPE", "CLOUDS", "RAIN", "SUNRISE", "SNOW", "IMG", "VIDEO"};
 
 
@@ -162,7 +162,7 @@ void stateMachine(int _state) {
       }
     }
     pgTemp.endDraw();
-    
+
     if (pixelate) {
       //image(pixelate(pg), -tileW/2, -tileH/2);
       source = pgTemp.get();
@@ -175,7 +175,7 @@ void stateMachine(int _state) {
       pgTemp.endDraw();
       image(pgTemp, 0, 0);
     } else image(pgTemp, 0, 0);
-    
+
     break;
 
   case PAINT:
@@ -220,7 +220,7 @@ void stateMachine(int _state) {
     }
     pg.popMatrix();
     pg.endDraw();
-    
+
     pgTemp.beginDraw();
     pgTemp.clear();
 
@@ -300,8 +300,8 @@ void stateMachine(int _state) {
       d.feed(pg4.get());
       pg4 = d.dither();
     } // else image(pg4, 0, 0);
-    
-    image(pg4, 0, 0);
+
+    //image(pg4, 0, 0);
     if (pixelate) {
       //image(pixelate(pg), -tileW/2, -tileH/2);
       source = pg4.get();
@@ -321,18 +321,13 @@ void stateMachine(int _state) {
     break;
 
   case RAIN:
-    println("rain geht gerade nicht");
+    //println("rain geht gerade nicht");
     pgTemp.beginDraw();
     pgTemp.background(0);
-    pgTemp.clear();
-    pgTemp.push();
-    pgTemp.stroke(0);
-    pgTemp.fill(0);
     for (int i = 0; i < drops.length; i++) {
       drops[i].fall(); // sets the shape and speed of drop
-      drops[i].show(pg); // render drop
+      drops[i].show(pgTemp); // render drop
     }
-    pgTemp.pop();
     pgTemp.endDraw();
 
     pg4.beginDraw();
@@ -343,12 +338,26 @@ void stateMachine(int _state) {
 
     if (ditherThis) {
       d.feed(pg4.get());
-      image(d.dither(), 0, 0);
+      pg4 = d.dither();
+    } // else image(pg4, 0, 0);
+
+    //image(pg4, 0, 0);
+    if (pixelate) {
+      //image(pixelate(pg), -tileW/2, -tileH/2);
+      source = pg4.get();
+      feed();
+      pgTemp.beginDraw();
+      pgTemp.clear();
+      for (int i = 0; i<dots.size(); i++) {
+        dots.get(i).display(pgTemp);
+      }
+      pgTemp.endDraw();
+      image(pgTemp, 0, 0);
     } else image(pg4, 0, 0);
+    
     break;
 
   case SUNRISE:
-    println("sunrise geht gerade nicht");
     pgTemp.beginDraw();
     pgTemp.background(0);
     //pg5.fill(sunBrightness);
@@ -362,19 +371,39 @@ void stateMachine(int _state) {
     //pg4.rect(0, 0, wallW, wallH);
     pg4.endDraw();
 
+    /*
+    if (ditherThis) {
+     d.feed(pg4.get());
+     image(d.dither(), 0, 0);
+     } else image(pg4, 0, 0);
+     */
     if (ditherThis) {
       d.feed(pg4.get());
-      image(d.dither(), 0, 0);
+      pg4 = d.dither();
+    } // else image(pg4, 0, 0);
+
+    //image(pg4, 0, 0);
+    if (pixelate) {
+      //image(pixelate(pg), -tileW/2, -tileH/2);
+      source = pg4.get();
+      feed();
+      pgTemp.beginDraw();
+      pgTemp.clear();
+      for (int i = 0; i<dots.size(); i++) {
+        dots.get(i).display(pgTemp);
+      }
+      pgTemp.endDraw();
+      image(pgTemp, 0, 0);
     } else image(pg4, 0, 0);
     break;
 
   case SNOW:
-    println("snow geht gerade nicht");
+    //println("snow geht gerade nicht");
     pgTemp.beginDraw();
     pgTemp.background(0);
     for (int i = 0; i < flakes.length; i++) {
       flakes[i].fall(); // sets the shape and speed of drop
-      flakes[i].show(); // render drop
+      flakes[i].show(pgTemp); // render drop
     }
     pgTemp.endDraw();
 
@@ -386,8 +415,23 @@ void stateMachine(int _state) {
 
     if (ditherThis) {
       d.feed(pg4.get());
-      image(d.dither(), 0, 0);
+      pg4 = d.dither();
+    } // else image(pg4, 0, 0);
+
+    //image(pg4, 0, 0);
+    if (pixelate) {
+      //image(pixelate(pg), -tileW/2, -tileH/2);
+      source = pg4.get();
+      feed();
+      pgTemp.beginDraw();
+      pgTemp.clear();
+      for (int i = 0; i<dots.size(); i++) {
+        dots.get(i).display(pgTemp);
+      }
+      pgTemp.endDraw();
+      image(pgTemp, 0, 0);
     } else image(pg4, 0, 0);
+    
     break;
 
   case IMG:
@@ -402,16 +446,18 @@ void stateMachine(int _state) {
       }
       pgTemp.endDraw();
       image(pgTemp, 0, 0);
-     // image(pixelate(p), 0, 0);
+      // image(pixelate(p), 0, 0);
     }
-   
-    
+
+
     break;
 
   case VIDEO:
-
     if (pixelate) {
-      source = myMovie;
+      pgTemp.beginDraw();
+      pgTemp.image(myMovie, 0, 0);
+      pgTemp.endDraw();
+      source = pgTemp.get();
       feed();
       pgTemp.beginDraw();
       pgTemp.clear();
@@ -419,22 +465,22 @@ void stateMachine(int _state) {
         dots.get(i).display(pgTemp);
       }
       pgTemp.endDraw();
-      image(myMovie, 0, 0, 0, 0);
+      //image(myMovie, 0, 0, 0, 0);
+
       image(pgTemp, 0, 0);
-      
     } else {
       image(myMovie, 0, 0);
     }
 
 
-/*
+    /*
     if (!pixelate) image(myMovie, 0, 0);
-    else {
-      PImage pTemp = pixelate(myMovie.get());
-      image(pTemp, 0, 0);
-    }
-    //image(myMovie, 0, 0, 0, 0);
-*/
+     else {
+     PImage pTemp = pixelate(myMovie.get());
+     image(pTemp, 0, 0);
+     }
+     //image(myMovie, 0, 0, 0, 0);
+     */
     break;
   }
 }
