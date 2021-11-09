@@ -46,6 +46,8 @@ void draw() {
   float r = 0;
   for(int i = 0; i<=(width/tileW)/2; i++) {
     for(int j = 0; j<=(height/tileH)/2; j++) {
+      
+      // + - + -
       copy(pg, sx + int((tileW*i)*r), sy - int((tileH*(i))*r), sw, sh, dx + int(tileW*i), dy - int(tileH*(i)), dw, dh);
       copy(pg, sx + int((tileW*i)*r), sy - int((tileH*(i+1))*r), sw, sh, dx + int(tileW*i), dy - int(tileH*(i+1)), dw, dh);
       copy(pg, sx + int((tileW*i)*r), sy - int((tileH*(i+2))*r), sw, sh, dx + int(tileW*i), dy - int(tileH*(i+2)), dw, dh);
