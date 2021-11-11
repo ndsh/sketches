@@ -9,7 +9,7 @@ final int SNOW = 7;
 final int IMG = 8;
 final int VIDEO = 9;
 
-int state = SNOW;
+int state = TARGETBOX;
 String[] namedStates = {"TARGETBOX", "WAVE", "PAINT", "DITHERTYPE", "CLOUDS", "RAIN", "SUNRISE", "SNOW", "IMG", "VIDEO"};
 
 
@@ -76,8 +76,35 @@ void stateMachine(int _state) {
         dots.get(i).display(pgTemp);
       }
       pgTemp.endDraw();
-      image(pgTemp, 0, 0);
-    } else image(pg, -tileW/2, -tileH/2);
+      //image(pgTemp, 0, 0);
+    } else {
+      pgTemp.beginDraw();
+      pgTemp.image(pg, -tileW/2, -tileH/2);
+      pgTemp.endDraw();
+      //image(pg, -tileW/2, -tileH/2);
+    }
+    
+    source = pgTemp.get();
+    if (asciify) {
+      pgTemp.beginDraw();
+      pgTemp.background(0);
+      pgTemp.textAlign(CENTER, CENTER);
+      pgTemp.textFont(font1);
+      pgTemp.textSize(20);
+      color c = 0;
+      float b = 0;
+      for (int y = 0; y<tilesY; y++) {
+        for (int x = 0; x<tilesX; x++) {
+          c = averageColor(source, x*tileW, y*tileH, tileW, tileH);
+          b = brightness(c);
+
+          asciify(pgTemp, x, y, tileW, tileH, (int)b);
+        }
+      }
+      pgTemp.endDraw();
+    }
+    
+    image(pgTemp, 0, 0);
 
 
     // draw the target box with a yellow stroke
@@ -173,8 +200,29 @@ void stateMachine(int _state) {
         dots.get(i).display(pgTemp);
       }
       pgTemp.endDraw();
-      image(pgTemp, 0, 0);
-    } else image(pgTemp, 0, 0);
+      //image(pgTemp, 0, 0);
+    }
+    
+    source = pgTemp.get();
+    if (asciify) {
+      pgTemp.beginDraw();
+      pgTemp.background(0);
+      pgTemp.textAlign(CENTER, CENTER);
+      pgTemp.textFont(font1);
+      pgTemp.textSize(20);
+      color c = 0;
+      float b = 0;
+      for (int y = 0; y<tilesY; y++) {
+        for (int x = 0; x<tilesX; x++) {
+          c = averageColor(source, x*tileW, y*tileH, tileW, tileH);
+          b = brightness(c);
+
+          asciify(pgTemp, x, y, tileW, tileH, (int)b);
+        }
+      }
+      pgTemp.endDraw();
+    }
+    image(pgTemp, 0, 0);
 
     break;
 
@@ -354,7 +402,7 @@ void stateMachine(int _state) {
       pgTemp.endDraw();
       image(pgTemp, 0, 0);
     } else image(pg4, 0, 0);
-    
+
     break;
 
   case SUNRISE:
@@ -431,13 +479,15 @@ void stateMachine(int _state) {
       pgTemp.endDraw();
       image(pgTemp, 0, 0);
     } else image(pg4, 0, 0);
-    
+
     break;
 
   case IMG:
-    if (!pixelate) image(p, 0, 0);
-    else {
-      source = p;
+    pgTemp.beginDraw();
+    pgTemp.image(p, 0, 0, pgTemp.width, pgTemp.height);
+    pgTemp.endDraw();
+    source = pgTemp.get();
+    if (pixelate) {
       feed();
       pgTemp.beginDraw();
       pgTemp.clear();
@@ -445,19 +495,36 @@ void stateMachine(int _state) {
         dots.get(i).display(pgTemp);
       }
       pgTemp.endDraw();
-      image(pgTemp, 0, 0);
-      // image(pixelate(p), 0, 0);
     }
 
+    if (asciify) {
+      pgTemp.beginDraw();
+      pgTemp.background(0);
+      pgTemp.textAlign(CENTER, CENTER);
+      pgTemp.textFont(font1);
+      pgTemp.textSize(20);
+      color c = 0;
+      float b = 0;
+      for (int y = 0; y<tilesY; y++) {
+        for (int x = 0; x<tilesX; x++) {
+          c = averageColor(source, x*tileW, y*tileH, tileW, tileH);
+          b = brightness(c);
+
+          asciify(pgTemp, x, y, tileW, tileH, (int)b);
+        }
+      }
+      pgTemp.endDraw();
+    }
+    image(pgTemp, 0, 0);
 
     break;
 
   case VIDEO:
+    pgTemp.beginDraw();
+    pgTemp.image(myMovie, 0, 0, pgTemp.width, pgTemp.height);
+    pgTemp.endDraw();
+    source = pgTemp.get();
     if (pixelate) {
-      pgTemp.beginDraw();
-      pgTemp.image(myMovie, 0, 0);
-      pgTemp.endDraw();
-      source = pgTemp.get();
       feed();
       pgTemp.beginDraw();
       pgTemp.clear();
@@ -465,12 +532,27 @@ void stateMachine(int _state) {
         dots.get(i).display(pgTemp);
       }
       pgTemp.endDraw();
-      //image(myMovie, 0, 0, 0, 0);
-
-      image(pgTemp, 0, 0);
-    } else {
-      image(myMovie, 0, 0);
     }
+
+    if (asciify) {
+      pgTemp.beginDraw();
+      pgTemp.background(0);
+      pgTemp.textAlign(CENTER, CENTER);
+      pgTemp.textFont(font1);
+      pgTemp.textSize(20);
+      color c = 0;
+      float b = 0;
+      for (int y = 0; y<tilesY; y++) {
+        for (int x = 0; x<tilesX; x++) {
+          c = averageColor(source, x*tileW, y*tileH, tileW, tileH);
+          b = brightness(c);
+
+          asciify(pgTemp, x, y, tileW, tileH, (int)b);
+        }
+      }
+      pgTemp.endDraw();
+    }
+    image(pgTemp, 0, 0);
 
 
     /*

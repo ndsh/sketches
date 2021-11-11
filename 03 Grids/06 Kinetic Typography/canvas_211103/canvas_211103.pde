@@ -1,5 +1,13 @@
 /*
   cp5 input fields and sliders
+ 
+ todo:
+ treshhold für pixelate um die lesbarkeit zu erhöhen
+ asciify:
+ wind effekt
+ facetten weiter "ausarbeiten"
+ minimale effekte
+ auflösung anpassen
  */
 
 
@@ -72,12 +80,17 @@ void setup() {
       dots.add(new Dot(x*tileW, y*tileH, tileW));
     }
   }
-  
+
   for (int i = 0; i<dots.size(); i++) {
     dots.get(i).setMode(1);
     dots.get(i).setBrightness(0);
   }
+
+  calcDensities();
   
+  //println(charset);
+  //println(sortedCharacters);
+  //mapped = (int)map(b, 0, 255, sortedCharacters.length()-1, 0);
 }
 
 void draw() {

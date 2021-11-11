@@ -55,6 +55,11 @@ void initCP5() {
     .setSize(200, 20)
     .setFont(uiFont)
     ;
+  cp5.addTextfield("input3")
+    .setPosition(900, 420)
+    .setSize(200, 20)
+    .setFont(uiFont)
+    ;
 
   // SLIDERS
   cp5.addSlider("sliderPhasing")
@@ -62,6 +67,7 @@ void initCP5() {
     .setRange(0, 1024)
     .setValue(phasing)
     .setCaptionLabel("phasing")
+    .setSliderMode(Slider.FLEXIBLE)
     ;
 
   cp5.addSlider("sliderSpeed")
@@ -69,6 +75,7 @@ void initCP5() {
     .setRange(0, 1024)
     .setValue(20)
     .setCaptionLabel("speed")
+    .setSliderMode(Slider.FLEXIBLE)
     ;
 
   cp5.addSlider("sliderFacetteX")
@@ -76,6 +83,7 @@ void initCP5() {
     .setRange(0, wallW)
     .setValue(20)
     .setCaptionLabel("facetteX")
+    .setSliderMode(Slider.FLEXIBLE)
     ;
 
   cp5.addSlider("sliderFacetteY")
@@ -83,6 +91,7 @@ void initCP5() {
     .setRange(0, wallH)
     .setValue(20)
     .setCaptionLabel("facetteY")
+    .setSliderMode(Slider.FLEXIBLE)
     ;
 
   cp5.addSlider("sliderTargetRotation")
@@ -90,26 +99,40 @@ void initCP5() {
     .setRange(0, 360)
     .setValue(180)
     .setCaptionLabel("rotate")
+    .setNumberOfTickMarks(35)
+    .setSliderMode(Slider.FLEXIBLE)
     ;
+    
   cp5.addSlider("sliderAlpha")
     .setPosition(520, 540)
     .setRange(0, 255)
     .setValue(20)
     .setCaptionLabel("alpha")
+    .setSliderMode(Slider.FLEXIBLE)
     ;
 
   cp5.addSlider("sliderRotation1")
     .setPosition(520, 560)
-    .setRange(0.0, 0.009)
-    .setValue(20)
+    .setRange(0.001, 0.1)
+    .setValue(0.02)
     .setCaptionLabel("rotation1speed")
+    .setSliderMode(Slider.FLEXIBLE)
     ;
 
   cp5.addSlider("sliderRotation2")
     .setPosition(520, 580)
-    .setRange(0.0, 0.009)
-    .setValue(20)
+    .setRange(0.001, 0.1)
+    .setValue(0.02)
     .setCaptionLabel("rotation2speed")
+    .setSliderMode(Slider.FLEXIBLE)
+    ;
+    
+  cp5.addSlider("sliderAsciiTresh")
+    .setPosition(900, 470)
+    .setRange(0, 255)
+    .setValue(tresh)
+    .setCaptionLabel("treshhold")
+    .setSliderMode(Slider.FLEXIBLE)
     ;
 
   //
@@ -118,12 +141,14 @@ void initCP5() {
     .setRange(0, 512)
     .setValue(0.01)
     .setCaptionLabel("brightness")
+    .setSliderMode(Slider.FLEXIBLE)
     ;
   cp5.addSlider("sliderXinc")
     .setPosition(800, 540)
     .setRange(0.0009, 0.1)
     .setValue(0.01)
     .setCaptionLabel("xinc")
+    .setSliderMode(Slider.FLEXIBLE)
     ;
 
   cp5.addSlider("sliderYinc")
@@ -131,6 +156,7 @@ void initCP5() {
     .setRange(0.0009, 0.1)
     .setValue(0.01)
     .setCaptionLabel("yinc")
+    .setSliderMode(Slider.FLEXIBLE)
     ;
 
   cp5.addSlider("sliderZinc")
@@ -138,6 +164,7 @@ void initCP5() {
     .setRange(0.0009, 1.0)
     .setValue(0.01)
     .setCaptionLabel("zinc")
+    .setSliderMode(Slider.FLEXIBLE)
     ;
 
   cp5.addSlider("sliderSunPos")
@@ -145,18 +172,23 @@ void initCP5() {
     .setRange(wallH+(sunSize*2), -(sunSize*2))
     .setValue(wallH)
     .setCaptionLabel("sunpos")
+    .setSliderMode(Slider.FLEXIBLE)
     ;
+    
   cp5.addSlider("sliderSunSize")
     .setPosition(1020, 540)
     .setRange(0, wallW*2)
     .setValue(wallW)
     .setCaptionLabel("sunsize")
+    .setSliderMode(Slider.FLEXIBLE)
     ;
+    
   cp5.addSlider("sliderSunBrightness")
     .setPosition(1020, 560)
     .setRange(0, 255)
     .setValue(255)
     .setCaptionLabel("sunbrightness")
+    .setSliderMode(Slider.FLEXIBLE)
     ;
 
 
@@ -208,6 +240,14 @@ void initCP5() {
     .setCaptionLabel("Reload Assets")
     .setColorCaptionLabel(white)
     ;
+  cp5.addButton("btnAsciify")
+    .setValue(0)
+    .setPosition(width-440, 420)
+    .setSize(140, 31)
+    .setCaptionLabel("ASCIIFY")
+    .setColorCaptionLabel(white)
+    ;
+    
   cp5.addButton("btnPixelate")
     .setValue(0)
     .setPosition(width-300, 420)
@@ -305,6 +345,7 @@ void initCP5() {
   cp5.getController("sliderPhasing").setValue(phasing);
   cp5.get(Textfield.class, "input1").setText(text1);
   cp5.get(Textfield.class, "input2").setText(text2);
+  cp5.get(Textfield.class, "input3").setText(charset);
 
   cpInitDone = true;
 }
@@ -352,9 +393,9 @@ public void sliderSpeed(float f) {
   println("phase shifting speed = " + speed);
 }
 
-public void sliderPhasing(float f) {
+public void sliderPhasing(int i) {
   if (!cpInitDone) return;
-  phasing = (int)map(f, 0, 1024, 0, 600);
+  phasing = (int)map(i, 0, 1024, 0, 600);
   println("phasing= " + phasing);
 }
 
@@ -368,7 +409,7 @@ public void sliderFacetteY(float f) {
   facetteY = f;
 }
 
-public void sliderTargetRotation(float f) {
+public void sliderTargetRotation(int f) {
   if (!cpInitDone) return;
   targetRotation = f;
 }
@@ -422,6 +463,11 @@ public void sliderSunBrightness(float f) {
   sunBrightness = f;
 }
 
+public void sliderAsciiTresh(int i) {
+  if (!cpInitDone) return;
+  tresh = i;
+}
+
 // INPUTS
 public void input1(String theText) {
   if (!cpInitDone) return;
@@ -432,6 +478,12 @@ public void input1(String theText) {
 public void input2(String theText) {
   if (!cpInitDone) return;
   text2 = cp5.get(Textfield.class, "input2").getText();
+}
+
+public void input3(String theText) {
+  if (!cpInitDone) return;
+  charset = cp5.get(Textfield.class, "input3").getText();
+  calcDensities();
 }
 
 
@@ -532,6 +584,11 @@ public void btnReloadAllAssets(int i) {
 public void btnPixelate(int i) {
   if (!cpInitDone) return;
   pixelate = !pixelate;
+}
+
+public void btnAsciify(int i) {
+  if (!cpInitDone) return;
+  asciify = !asciify;
 }
 
 void bar(int n) {

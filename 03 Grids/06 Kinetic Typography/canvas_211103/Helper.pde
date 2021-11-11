@@ -33,7 +33,7 @@ boolean waveDirection = true;
 int sx, sy, sw, sh, dx, dy, dw, dh;
 
 int counter = 0;
-boolean showGrid = true;
+boolean showGrid = false;
 boolean showCursor = true;
 boolean doubleText = false;
 boolean ditherThis = true;
@@ -41,6 +41,7 @@ boolean export = false;
 boolean bigText = false;
 boolean pixelate = true;
 boolean moviePlaying = false;
+boolean asciify = true;
 
 int[] targetStart = {28, 1};
 int[] targetEnd = {8, 14};
@@ -54,7 +55,7 @@ int tilesY = 17;
 long timestamp = 0;
 long interval = 500;
 
-String text1 = "LEL";
+String text1 = "GRAND";
 String text2 = "TECHNOLOGIES";
 
 int tileW = 0;
@@ -83,7 +84,7 @@ StringList videoImports;
 int staticIndex = 0;
 int videoIndex = 0;
 
-float targetRotation = 180;
+int targetRotation = 180;
 
 /* CLOUDS
  */
@@ -95,7 +96,11 @@ float zincrement = 0.02;
 float noiseBrightness = 255;
 float sunPos = wallH;
 float sunSize = wallW/2;
-float sunBrightness = 255; 
+float sunBrightness = 255;
+
+String charset = " OA!LMNBEAM._";
+String sortedCharacters = "";
+int tresh = 125; // 50% grau tresshold um kleine einheiten zu bilden
 
 // Functions and Events
 
@@ -116,36 +121,36 @@ void grid() {
 }
 
 void mouseDragged() {
-  if(state == 2) {
+  if (state == 2) {
     pgTemp.beginDraw();
     //pg3.fill(0, 10);
     //pg3.rect(0, 0, pg3.width, pg3.height);
     pgTemp.fill(255);
-    pgTemp.noStroke();
+    //pgTemp.noStroke();
+    pgTemp.stroke(255);
     pgTemp.rect(mouseX/tileW * tileW, mouseY/tileH * tileH, 24, 24);
+
     pgTemp.endDraw();
   } else {
-    if(mouseButton == 37) {
-      
+    if (mouseButton == 37) {
     }
   }
 }
 void keyPressed() {
   if (key == CODED) {
-    if(keyCode == LEFT) {
-    } else if(keyCode == RIGHT) {
-    } else if(keyCode == UP) {
-    } else if(keyCode == DOWN) {
+    if (keyCode == LEFT) {
+    } else if (keyCode == RIGHT) {
+    } else if (keyCode == UP) {
+    } else if (keyCode == DOWN) {
     }
   } else {
     if (key == 'w' || key == 'W' ) {
     } else if (key == 'g' || key == 'G' ) {
-    } else if(key == 'c' || key == 'C') {
-    } else if(key == 't' || key == 'T') {
-    } else if(key == 'm' || key == 'M') {
-    } else if(key == 'd' || key == 'D') {
+    } else if (key == 'c' || key == 'C') {
+    } else if (key == 't' || key == 'T') {
+    } else if (key == 'm' || key == 'M') {
+    } else if (key == 'd' || key == 'D') {
     }
-    
   }
 }
 
@@ -155,7 +160,7 @@ class Drop {
   float z; // z position of drop , determines whether the drop is far or near
   float len; // length of the drop
   float yspeed; // speed of te drop
-  
+
   //near means closer to the screen , ie the higher the z value ,closer the drop is to the screen.
   Drop() {
     x  = random(wallW); // random x position ie width because anywhere along the width of screen
@@ -165,8 +170,8 @@ class Drop {
     yspeed  = map(z, 0, 20, 1, 20); // if z is near drop is faster
   }
 
-  void fall() { // function  to determine the speed and shape of the drop 
-    y = y + yspeed; // increment y position to give the effect of falling 
+  void fall() { // function  to determine the speed and shape of the drop
+    y = y + yspeed; // increment y position to give the effect of falling
     float grav = map(z, 0, 20, 0, 0.2); // if z is near then gravity on drop is more
     yspeed = yspeed + grav; // speed increases as gravity acts on the drop
 
@@ -181,7 +186,7 @@ class Drop {
     float thick = map(z, 0, 20, 1, 10); //if z is near , drop is more thicker
     pg.strokeWeight(thick); // weight of the drop
     pg.stroke(255, alpha); // purple color
-    pg.line(x, y, x, y+len); // draws the line with two points 
+    pg.line(x, y, x, y+len); // draws the line with two points
   }
 }
 
@@ -192,7 +197,7 @@ class Flake {
   float len; // length of the drop
   float yspeed; // speed of te drop
   float angle = 2;
-  
+
   //near means closer to the screen , ie the higher the z value ,closer the drop is to the screen.
   Flake() {
     x  = random(-100, wallW+100); // random x position ie width because anywhere along the width of screen
@@ -202,8 +207,8 @@ class Flake {
     yspeed  = map(z, 0, 20, 1, 2); // if z is near drop is faster
   }
 
-  void fall() { // function  to determine the speed and shape of the drop 
-    y = y + yspeed; // increment y position to give the effect of falling 
+  void fall() { // function  to determine the speed and shape of the drop
+    y = y + yspeed; // increment y position to give the effect of falling
     float grav = map(z, 0, 20, 0, 0.000002); // if z is near then gravity on drop is more
     yspeed = yspeed + grav; // speed increases as gravity acts on the drop
     x += map(sin(frameCount*0.09 + x*y), -1, 1, -2, 2);
@@ -220,7 +225,7 @@ class Flake {
     //pg5.strokeWeight(thick); // weight of the drop
     //pg5.stroke(255, alpha); // purple color
     pg.fill(255, alpha);
-    pg.ellipse(x, y, 5, 5); // draws the line with two points 
+    pg.ellipse(x, y, 5, 5); // draws the line with two points
   }
 }
 
@@ -236,7 +241,7 @@ void drawSun(float xloc, float yloc, int size, int num) {
 
 void movieEvent(Movie m) {
   m.read();
-  
+
   //if(state == VIDEO) source = myMovie;
 }
 
@@ -244,16 +249,15 @@ void loadImage(int index) {
   p = loadImage(staticImports.get(index));
 }
 void loadMovie(int index) {
-  if(myMovie != null) myMovie.stop();
+  if (myMovie != null) myMovie.stop();
   myMovie = null;
-  System.gc();
+  //System.gc();
   myMovie = new Movie(this, videoImports.get(index));
   myMovie.loop();
   myMovie.play();
   myMovie.volume(0);
   moviePlaying = true;
   //myMovie.speed(movieSpeed);
-  
 }
 
 String trimPath(String s) {
@@ -267,13 +271,13 @@ PGraphics pixelate(PImage p) { // aka macro pixels
   pg.noStroke();
   int tWidth = wallW / tilesX;
   int tHeight = wallH / tilesY;
-  
+
   color c = 0;
   float b = 0;
-  
-  
-  for(int y = 0; y<tilesY; y++) {
-    for(int x = 0; x<tilesX; x++) {
+
+
+  for (int y = 0; y<tilesY; y++) {
+    for (int x = 0; x<tilesX; x++) {
       c = averageColor(p, x*tWidth, y*tHeight, tWidth, tHeight);
       b = brightness(c);
       pg.fill(b);
@@ -293,7 +297,7 @@ color averageColor(PImage source, float x, float y, float w, float h) {
   int r = 0;
   int g = 0;
   int b = 0;
-  
+
   for (int i=0; i<temp.pixels.length; i++) {
     color c = temp.pixels[i];
     r += c>>16&0xFF;
@@ -303,20 +307,85 @@ color averageColor(PImage source, float x, float y, float w, float h) {
   r /= temp.pixels.length;
   g /= temp.pixels.length;
   b /= temp.pixels.length;
- 
+
   return color(r, g, b);
 }
 
 void feed() {
   color c = 0;
   float b = 0;
-  for(int i = 0; i<dots.size(); i++) {
+  for (int i = 0; i<dots.size(); i++) {
     int x = (int)i%tilesX;
     int y = (int)i/tilesX;
     c = averageColor(source, x*tileW, y*tileH, tileW, tileH);
     b = brightness(c);
-    
+
     dots.get(i).setBrightness(b);
-    
   }
+}
+
+void asciify(PGraphics pg, int x, int y, int w, int h, int value) {
+  
+  int mapped = (int)map(value, 0, 255, 0, sortedCharacters.length()-1);
+  pg.push();
+  pg.fill(0);
+  //pg.ellipse(x*w, y*h, w, h); 
+  
+  pg.translate(x*w, y*h);
+  pg.fill(255);
+  if(value <= tresh) {
+    pg.textSize(10);
+    pg.text(sortedCharacters.charAt(mapped), w/2 - 5, h/2 -5);
+    pg.text(sortedCharacters.charAt(mapped), w/2 - 5, h/2 +5);
+    pg.text(sortedCharacters.charAt(mapped), w/2 + 5, h/2 -5);
+    pg.text(sortedCharacters.charAt(mapped), w/2 + 5, h/2 +5);
+  } else {
+    pg.textSize(20);
+    pg.text(sortedCharacters.charAt(mapped), w/2, h/2);
+  }
+  
+  
+  pg.pop();
+  
+}
+
+float brightnessSensitivity = 255;
+
+void calcDensities() {
+  PGraphics pg = createGraphics(24, 24); 
+  println(charset);
+  pg.beginDraw();
+  pg.textFont(uiFont);
+  pg.textSize(24);
+  pg.textAlign(CENTER, CENTER);
+  pg.endDraw();
+  println("Calculating densities. This may take a second or two");
+  densities = new ArrayList<Density>();
+  sortedCharacters = "";
+  for (int i = 0; i<charset.length(); i++) {
+    pg.beginDraw();
+    pg.clear();
+    pg.text(charset.charAt(i), pg.width/2, pg.height/2);
+    pg.endDraw();
+    densities.add(new Density(getDensity(pg), charset.charAt(i)));
+  }
+
+  Collections.sort(densities);
+  for (int i = 0; i<densities.size(); i++) sortedCharacters += densities.get(i).getCharacter();
+  println("Done!");
+ 
+}
+
+int getDensity(PImage p) {
+  color c = 0;
+  int count = 0;
+  p.loadPixels();
+  for (int y = 0; y<p.width; y++) {
+    for (int x = 0; x<p.height; x++) {
+      c = p.pixels[y*p.width+x];
+      if (brightness(c) >= brightnessSensitivity) count++;
+    }
+  }
+  //println("density=" + count);
+  return count;
 }
