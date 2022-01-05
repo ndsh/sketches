@@ -21,6 +21,22 @@
       println("toggleFeed=" + toggleFeed);
     } else if (key == 'i' || key == 'I' ) {
       toggleIncrement = !toggleIncrement;
+    } else if (key == 'l' || key == 'L' ) {
+      toggleUsefillBG = !toggleUsefillBG;
+      println("toggleUsefillBG=" + toggleUsefillBG);
+    } else if (key == 'k' || key == 'K' ) {
+      // changes the way the flaps are behaving
+      // either up in the classic way or the new down way
+      toggleFlapDir = !toggleFlapDir;
+      println("toggleFlapDir=" + toggleFlapDir);
+    } else if (key == 'j' || key == 'J' ) {
+      // turn off alpha bg for smearing
+      toggleAlphaBG = !toggleAlphaBG;
+      println("toggleAlphaBG=" + toggleAlphaBG);
+    } else if (key == 'd' || key == 'D' ) {
+      // turn off alpha bg for smearing
+      toggleBrightnessDetails = !toggleBrightnessDetails;
+      println("toggleBrightnessDetails=" + toggleBrightnessDetails);
     }
   }
   if (str(key).toLowerCase().equals("c")) {

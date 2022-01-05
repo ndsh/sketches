@@ -14,6 +14,7 @@ class Grid {
   float[] tileSize = {0, 0};
   int nuance;
   int amount;
+  Dither dither;
   
   ArrayList<Density> densities = new ArrayList<Density>();
   PImage target = null;
@@ -28,7 +29,8 @@ class Grid {
     amount = gridSize*gridSize;
     //amount = tileSize[]|;
     flaps = new Splitflap[amount];
-
+    dither = new Dither();
+    dither.setCanvas((int)w, (int)h);
     
     println("grid=" + gridSize + "x" + gridSize + " / tiles= " + tileSize[0] + "x" + tileSize[1] + "px");
     
@@ -96,8 +98,16 @@ class Grid {
     brightnessGrid.noStroke();
     for(int y = 0; y<gridSize; y++) {
       for(int x = 0; x<gridSize; x++) {
+        int detail = 8;
+        
+        
         c = averageColor(target, x*tileSize[0], y*tileSize[1], tileSize[0], tileSize[1]);
         b = brightness(c);
+        if(toggleBrightnessDetails) {
+          b = (int)(b/detail)*detail;
+        }
+        //println(b);
+       
         
         brightnessGrid.push();
         brightnessGrid.fill(b);
@@ -115,6 +125,8 @@ class Grid {
       //println();
     }
     brightnessGrid.endDraw();
+    
+
     //println();
   }
   
@@ -122,7 +134,7 @@ class Grid {
     background(0);
     fill(255);
     noStroke();
-    for(int i = 0; i<flaps.length; i++) {      
+    for(int i = 0; i<flaps.length; i++) {        
       flaps[i].display();
     }
   }
@@ -132,6 +144,7 @@ class Grid {
     pg.background(0);
     //pg.fill(255);
     pg.noStroke();
+    
     for(int i = 0; i<flaps.length; i++) {      
       flaps[i].display(pg);
     }
@@ -144,6 +157,11 @@ class Grid {
   }
   
   void feed(PImage p) {
+    /*if(toggleUseDither) {
+      dither.feed(p);
+      target = dither.floyd_steinberg();
+    } else target = p;
+    */
     target = p;
   }
   

@@ -378,7 +378,7 @@ public void toggleBackground(int i) {
 
 public void toggleBackground(boolean b) {
   if(!cpInitDone) return;
-  toggleBackground = b;
+  toggleBackground = !toggleBackground;
   println("toggleBackground= " + toggleBackground);
 }
 

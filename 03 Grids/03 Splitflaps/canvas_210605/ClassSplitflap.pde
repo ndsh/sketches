@@ -40,13 +40,36 @@ class Splitflap {
   
   void display(PGraphics pg) {
     int mapped = (int)map(value, 0, nuance, 0, vocabulary.length()-1);
+    boolean fillBG = false;
+    if(mapped >= nuance-1 && toggleUsefillBG) fillBG = true;
     //pg.push();
     pg.fill(0);
     float margin = 0.5;
-    pg.rect(pos.x-margin, pos.y-margin, tileSize[0]-margin, tileSize[1]-margin); 
+    
+    // toggleNoFlapOnSpecificBrigthness
+    
     //pg.pop();
-    pg.fill(255);
-    pg.text(vocabulary.charAt(mapped), pos.x, pos.y);
+    boolean redraw = true;
+    if(fillBG && toggleUsefillBG) {
+      pg.fill(255);
+      pg.rect(pos.x-margin, pos.y-margin, tileSize[0]-margin, tileSize[1]-margin);
+      pg.fill(0);
+      pg.text(vocabulary.charAt(mapped), pos.x, pos.y);
+    } else {
+      pg.rect(pos.x-margin, pos.y-margin, tileSize[0]-margin, tileSize[1]-margin);
+      if(toggleP1xelStyle) {
+          //if(b >= 120) b = color(0, 255, 0);
+          
+          if(mapped >= vocabulary.length()/2) {
+            pg.fill(0, 0, 255);
+            if(frameCount % 5 == 0) redraw = false;
+          } else if(mapped > 0) pg.fill(255, 0, 0);
+          else pg.fill(0);
+      } else {
+        pg.fill(255);
+      }
+      if(redraw) pg.text(vocabulary.charAt(mapped), pos.x, pos.y);
+    }
     
     
   }
@@ -67,10 +90,20 @@ class Splitflap {
             if(interval >= decrease) interval -= decrease;
             
           }
-          if(toggleFlapping) value += inc;
-          else value = target;
+          if(toggleFlapDir) {
+            if(toggleFlapping) value += inc;
+            else value = target;
+            if(value > nuance) value = 0;
+          } else {
+            if(toggleFlapping) value -= inc;
+            else value = target;
+            if(value <= 0) value = target;
+          }
           
-          if(value > nuance) value = 0;
+          
+          
+          
+          
         } else if(value == target) {
           busy = false;
           hold = true;

@@ -42,8 +42,10 @@
 // [ ] turn off the "brightness mapping" / pixel density
 // [ ] something like a bright "cursor" symbol that appears before new chars (see andreas gysin works)
 // [x] autocycle for galleries
-// [ ] flaps mit invertiertem hintergrund
+// [/] flaps mit invertiertem hintergrund
 
+// [ ] lightmap fixen -> besser abstufungen machen, z.B. 255 brightness values / 16 stufen
+// [ ] show spitflaps only every x frames (mit modulo)
 
 
 // source: https://en.wikipedia.org/wiki/List_of_Unicode_characters
@@ -88,6 +90,13 @@ boolean toggleBackground = true;
 boolean toggleBrightnessFlip = false;
 boolean toggleAutocycle = false;
 boolean toggleFullscreen = false;
+boolean toggleUsefillBG = false;
+boolean toggleFlapDir = false;
+boolean toggleNoFlapOnSpecificBrigthness = true;
+boolean toggleAlphaBG = true;
+boolean toggleBrightnessDetails = false;
+boolean toggleUseDither = true;
+boolean toggleP1xelStyle = false;
 
 boolean firstClick = false;
 boolean frameReady = false;
@@ -153,7 +162,8 @@ void draw() {
     grid.update();
     background(30);
     showWindows(detectResolution(resolutions[selectResolution][0], resolutions[selectResolution][1]));
-    if(brightnessToggle) image(grid.getBrightnessGrid(), 700, 10, 80, 80);
+    //if(brightnessToggle) image(grid.getBrightnessGrid(), 700, 10, 80, 80);
+    if(brightnessToggle) image(grid.getBrightnessGrid(), 10, 10, 580, 580);
     exportFrames(toggleExport);
   }
   
