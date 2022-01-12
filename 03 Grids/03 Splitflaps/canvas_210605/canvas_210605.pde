@@ -46,6 +46,7 @@
 
 // [ ] lightmap fixen -> besser abstufungen machen, z.B. 255 brightness values / 16 stufen
 // [ ] show spitflaps only every x frames (mit modulo)
+// [ ] color numbers according to their lightness too?
 
 
 // source: https://en.wikipedia.org/wiki/List_of_Unicode_characters
@@ -81,7 +82,7 @@ boolean brightnessToggle = false;
 boolean cpInitDone = false;
 boolean toggleFeed = true;
 boolean toggleIncrement = true;
-boolean toggleDebugView = false;
+boolean toggleDebugView = true;
 boolean toggleFlapping = true;
 boolean togglePlay = true;
 boolean toggleStroke = true;
@@ -95,8 +96,9 @@ boolean toggleFlapDir = false;
 boolean toggleNoFlapOnSpecificBrigthness = true;
 boolean toggleAlphaBG = true;
 boolean toggleBrightnessDetails = false;
-boolean toggleUseDither = true;
+boolean toggleUseDither = false;
 boolean toggleP1xelStyle = false;
+boolean toggleUseBrightnessValues = false;
 
 boolean firstClick = false;
 boolean frameReady = false;

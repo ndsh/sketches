@@ -19,6 +19,12 @@ class Animation {
 
   long timestamp = 0;
   long interval = 2500;
+  
+  GEN7 g7;
+  GEN8 g8;
+  GEN9 g9;
+  GEN10 g10;
+  GEN12 g12;
 
   final int CIRCLE = 0;
   final int ELLIPSUS = 1;
@@ -58,9 +64,15 @@ class Animation {
   final int GEN4 = 33;
   final int GEN5 = 34;
   final int GEN6 = 35;
+  final int GEN7 = 36;
+  final int GEN8 = 37;
+  final int GEN9 = 38;
+  final int GEN10 = 39;
+  final int GEN11 = 40;
+  final int GEN12 = 41;
 
   // current state to start with
-  int state = GEN6;
+  int state = GEN12;
 
   String[] stateNames = {
     "CIRCLE", "ELLIPSE", "SQUARE", "RECTANGLE", "MOVIE",
@@ -70,7 +82,7 @@ class Animation {
     "QUADTREEFLOCKING", "GRADIENTS", "DRAW",
     "THREED", "THREEDLINES", "THREEDDISK", "THREEDSCULPTURE", "THREEDCROSS",
     "SNOW", "GEN1_OLD", "GEN1", "GEN2", "GEN3_OLD", "GEN3", "GEN4",
-    "GEN5", "GEN6"
+    "GEN5", "GEN6", "GEN7", "GEN8", "GEN9", "GEN10", "GEN11", "GEN12"
   };
 
   String[] autoStateSelection = {
@@ -150,6 +162,7 @@ class Animation {
   PVector[] pointsSpace;
   PVector[] pointsDisk  = new PVector[8];
   PVector[] pointsSculpt1 =  new PVector[16];
+  PVector[] pointsSculpt2 =  new PVector[16];
   PVector[] pointsCross =  new PVector[8];
   //PVector[] pointsGen1 =  new PVector[1];
   ArrayList<PVector> pointsGen1 = new ArrayList<>();
@@ -200,6 +213,12 @@ class Animation {
     pg.strokeWeight(5);
     pg.textFont(loadFont(fontsFolder + "AkkuratStd-Bold-80.vlw"));
     pg.endDraw();
+    
+    g7 = new GEN7(pg.width, pg.height);
+    g8 = new GEN8(pg.width, pg.height);
+    g9 = new GEN9(pg.width, pg.height);
+    g10 = new GEN10(pg.width, pg.height);
+    g12 = new GEN12(pg.width, pg.height);
 
     //movie = new Movie(pa, "../assets/_MOV/faq2_clean.mp4");
     //movie.loop();
@@ -259,6 +278,11 @@ class Animation {
     for (int i = 0; i<pointsSculpt1.length; i++) {
       float map = map(i, 0, pointsSculpt1.length, -0.5, 0.5);
       pointsSculpt1[i] = new PVector(map, map, map);
+    }
+    
+    for (int i = 0; i<pointsSculpt2.length; i++) {
+      float map = map(i, 0, pointsSculpt2.length, -0.25, 0.25);
+      pointsSculpt2[i] = new PVector(map, map, map);
     }
 
     pointsCross[0] = new PVector(-0.55, 0, 0);
@@ -1683,6 +1707,118 @@ class Animation {
       theta += 0.01;
       
       break;
+      
+      case GEN7:
+        if (!movieStopped) stopMovie();
+        pg.beginDraw();
+        pg.rectMode(CORNER);
+        applyToggleStyles();
+        g7.update();
+        g7.display(pg);
+        pg.endDraw();
+        animationReady = true;
+      break;
+      
+      case GEN8:
+        /*
+        if (!movieStopped) stopMovie();
+        pg.beginDraw();
+        pg.ellipseMode(CENTER);
+        pg.rectMode(CORNER);
+        applyToggleStyles();
+        g8.update();
+        g8.display(pg);
+        pg.endDraw();
+        animationReady = true;
+        */
+       rotationX[1][1] = cos(theta);
+      rotationX[1][2] = -sin(theta);
+      rotationX[1][1] = sin(theta);
+      rotationX[1][2] = cos(theta);
+
+      rotationY[0][0] = cos(theta);
+      rotationY[0][2] = sin(theta);
+      rotationY[2][0] = -sin(theta);
+      rotationY[2][2] = cos(theta);
+
+      rotationZ[0][0] = cos(theta);
+      rotationZ[0][1] = -sin(theta);
+      rotationZ[1][0] = sin(theta);
+      rotationZ[1][1] = cos(theta);
+
+      projected = new PVector[pointsSculpt2.length];
+      index = 0;
+      for (PVector v : pointsSculpt2) {
+        PVector rotated = matmul(rotationY, v);
+        rotated = matmul(rotationX, rotated);
+        rotated = matmul(rotationZ, rotated);
+        PVector projected2d = matmul(projection, rotated);
+        projected2d.mult(500);
+        projected[index] = projected2d;
+        index++;
+      }
+
+
+      if (!movieStopped) stopMovie();
+      pg.beginDraw();
+      pg.translate(pg.width/2, pg.height/2);
+      applyToggleStyles();
+
+      for(int i = 0; i<projected.length; i++) {
+        pg.stroke(255);
+        pg.strokeWeight(32);
+        pg.noFill();
+        //pg.point(v.x, v.y);
+        pg.line(projected[i].x, projected[i].y, projected[(i+1)%projected.length].x, projected[(i+1)%projected.length].y);   
+      }
+      pg.endDraw();
+      animationReady = true;
+      theta += 0.01;
+      break;
+      
+      case GEN9:
+        if (!movieStopped) stopMovie();
+        pg.beginDraw();
+        //pg.rectMode(CENTER);
+        applyToggleStyles();
+        g9.update();
+        g9.display(pg);
+        pg.endDraw();
+        animationReady = true;
+      break;
+      
+      case GEN10:
+        if (!movieStopped) stopMovie();
+        pg.beginDraw();
+        //pg.rectMode(CENTER);
+        applyToggleStyles();
+        g10.update();
+        g10.display(pg);
+        pg.endDraw();
+        animationReady = true;
+      break;
+      
+      case GEN11:
+        if (!movieStopped) stopMovie();
+        pg.beginDraw();
+        //pg.rectMode(CENTER);
+        applyToggleStyles();
+        g10.update();
+        g10.display(pg);
+        pg.endDraw();
+        animationReady = true;
+      break;
+      
+      case GEN12:
+        if (!movieStopped) stopMovie();
+        pg.beginDraw();
+        //pg.rectMode(CENTER);
+        applyToggleStyles();
+        g12.update();
+        g12.display(pg);
+        pg.endDraw();
+        animationReady = true;
+      break;
     }
   }
 
@@ -1791,8 +1927,11 @@ class Animation {
     if(toggleAlphaBG) {
       pg.push();
       pg.noStroke();
-      pg.fill(0, 1);
+      pg.fill(0, 5);
+      pg.push();
+      pg.rectMode(CORNER);
       pg.rect(0, 0, pg.width, pg.height);
+      pg.pop();
       //pg.rect(pg.width/2, pg.height/2, pg.width, pg.height);
       pg.pop();
     } else { 

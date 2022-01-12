@@ -65,6 +65,9 @@ class Splitflap {
             if(frameCount % 5 == 0) redraw = false;
           } else if(mapped > 0) pg.fill(255, 0, 0);
           else pg.fill(0);
+      } else if(toggleUseBrightnessValues) {
+        float mappedB = (int)map(value, 0, nuance, 0, 255);
+        pg.fill(mappedB);
       } else {
         pg.fill(255);
       }
