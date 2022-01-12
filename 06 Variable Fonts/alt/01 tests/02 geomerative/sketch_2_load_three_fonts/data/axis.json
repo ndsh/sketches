@@ -1,0 +1,51 @@
+[
+  {
+    "font": "Light Condensed",
+    "wght": 0
+  },
+  {
+    "font": "Regular Condensed",
+    "wght": 100
+  },
+  {
+    "font": "Bold Condensed",
+    "wght": 200
+  }
+]
+
+axes
+{"tag":"wght","minValue":0,"defaultValue":0,"maxValue":200,"name":{"en":"Weight"}}
+{"tag":"wdth","minValue":0,"defaultValue":0,"maxValue":200,"name":{"en":"Width"}}
+{"tag":"ital","minValue":0,"defaultValue":0,"maxValue":100,"name":{"en":"Italic"}}
+
+instances
+{"name":{"en":"Light Condensed"},"coordinates":{"wght":0,"wdth":0,"ital":0}}
+{"name":{"en":"Light Condensed Italic"},"coordinates":{"wght":0,"wdth":0,"ital":100}}
+{"name":{"en":"Light SemiCondensed"},"coordinates":{"wght":0,"wdth":50,"ital":0}}
+{"name":{"en":"Light SemiCondensed Italic"},"coordinates":{"wght":0,"wdth":50,"ital":100}}
+{"name":{"en":"Light"},"coordinates":{"wght":0,"wdth":100,"ital":0}}
+{"name":{"en":"Light Italic"},"coordinates":{"wght":0,"wdth":100,"ital":100}}
+{"name":{"en":"Light SemiExtended"},"coordinates":{"wght":0,"wdth":150,"ital":0}}
+{"name":{"en":"Light SemiExtended Italic"},"coordinates":{"wght":0,"wdth":150,"ital":100}}
+{"name":{"en":"Light Extended"},"coordinates":{"wght":0,"wdth":200,"ital":0}}
+{"name":{"en":"Light Extended Italic"},"coordinates":{"wght":0,"wdth":200,"ital":100}}
+{"name":{"en":"Regular Condensed"},"coordinates":{"wght":100,"wdth":0,"ital":0}}
+{"name":{"en":"Regular Condensed Italic"},"coordinates":{"wght":100,"wdth":0,"ital":100}}
+{"name":{"en":"Regular SemiCondensed"},"coordinates":{"wght":100,"wdth":50,"ital":0}}
+{"name":{"en":"Regular SemiCondensed Italic"},"coordinates":{"wght":100,"wdth":50,"ital":100}}
+{"name":{"en":"Regular"},"coordinates":{"wght":100,"wdth":100,"ital":0}}
+{"name":{"en":"Regular Italic"},"coordinates":{"wght":100,"wdth":100,"ital":100}}
+{"name":{"en":"Regular SemiExtended"},"coordinates":{"wght":100,"wdth":150,"ital":0}}
+{"name":{"en":"Regular SemiExtended Italic"},"coordinates":{"wght":100,"wdth":150,"ital":100}}
+{"name":{"en":"Regular Extended"},"coordinates":{"wght":100,"wdth":200,"ital":0}}
+{"name":{"en":"Regular Extended Italic"},"coordinates":{"wght":100,"wdth":200,"ital":100}}
+{"name":{"en":"Bold Condensed"},"coordinates":{"wght":200,"wdth":0,"ital":0}}
+{"name":{"en":"Bold Condensed Italic"},"coordinates":{"wght":200,"wdth":0,"ital":100}}
+{"name":{"en":"Bold SemiCondensed"},"coordinates":{"wght":200,"wdth":50,"ital":0}}
+{"name":{"en":"Bold SemiCondensed Italic"},"coordinates":{"wght":200,"wdth":50,"ital":100}}
+{"name":{"en":"Bold"},"coordinates":{"wght":200,"wdth":100,"ital":0}}
+{"name":{"en":"Bold Italic"},"coordinates":{"wght":200,"wdth":100,"ital":100}}
+{"name":{"en":"Bold SemiExtended"},"coordinates":{"wght":200,"wdth":150,"ital":0}}
+{"name":{"en":"Bold SemiExtended Italic"},"coordinates":{"wght":200,"wdth":150,"ital":100}}
+{"name":{"en":"Bold Extended"},"coordinates":{"wght":200,"wdth":200,"ital":0}}
+{"name":{"en":"Bold Extended Italic"},"coordinates":{"wght":200,"wdth":200,"ital":100}}
